@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Subir CSV - Agenda{% endblock %}
+
+{% block content %}
+<!-- Fondo moderno con gradiente -->
+<div class="bg-gradient-primary text-white py-5" style="background: linear-gradient(135deg, #007bff, #00bcd4);">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4">Subir archivo CSV</h1>
+            <p class="lead">Importa tus contactos desde un archivo CSV de manera fácil y rápida.</p>
+
+            <!-- Mostrar mensajes de Django -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Formulario para subir CSV -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="csv_file" class="form-label">
+                                <i class="fas fa-file-csv"></i> Selecciona un archivo CSV:
+                            </label>
+                            <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Subir CSV
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir FontAwesome para íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}

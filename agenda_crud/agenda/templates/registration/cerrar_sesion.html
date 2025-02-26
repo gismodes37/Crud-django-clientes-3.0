@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Cerrar Sesión - Agenda{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Has cerrado sesión</h1>
+    <p class="text-center">Gracias por usar nuestra aplicación. Esperamos verte pronto.</p>
+    <p class="text-center">
+        <a href="{% url 'login' %}" class="btn btn-primary">Iniciar Sesión nuevamente</a>
+    </p>
+    <!-- Mensaje de depuración -->
+    <p class="text-center text-muted">Esta es la plantilla personalizada de cierre de sesión.</p>
+</div>
+
+<!-- Redirección automática después de 5 segundos -->
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'login' %}";
+    }, 10000);  // Redirige después de 5 segundos
+</script>
+{% endblock %}

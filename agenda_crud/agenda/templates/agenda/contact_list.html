@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Contactos - Agenda{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Título de la página -->
+    <h1 class="text-center mb-4">Lista de Contactos</h1>
+
+    <!-- Campo de búsqueda -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8 col-lg-6">
+            <form method="get" class="input-group shadow-sm">
+                <input type="text" id="search-input" class="form-control" placeholder="Buscar contactos..." value="{{ query|default:'' }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Indicador de carga -->
+    <div id="loading" style="display: none; text-align: center; margin: 20px;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p>Buscando...</p>
+    </div>
+
+    <!-- Botón para crear nuevo contacto -->
+    <div class="text-center mb-4">
+        <a href="{% url 'contact_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Crear Nuevo Contacto
+        </a>
+    </div>
+
+    <!-- Contenedor para la tabla de contactos -->
+    <div id="contactos-table" class="card shadow-sm">
+        <div class="card-body">
+            {% include 'agenda/partials/contactos_tabla.html' with contacts=contacts %}
+        </div>
+    </div>
+
+    <!-- Navegación de paginación -->
+    <nav aria-label="Paginación" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if contacts.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&q={{ query }}" aria-label="Primera">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ contacts.previous_page_number }}&q={{ query }}" aria-label="Anterior">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Página {{ contacts.number }} de {{ contacts.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if contacts.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ contacts.next_page_number }}&q={{ query }}" aria-label="Siguiente">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ contacts.paginator.num_pages }}&q={{ query }}" aria-label="Última">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Script para la búsqueda en tiempo real -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('search-input');
+        const contactosTable = document.getElementById('contactos-table');
+        const loading = document.getElementById('loading');  // Referencia al indicador de carga
+        let timeoutId;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(timeoutId);  // Cancela el timeout anterior
+            const query = this.value;
+
+            loading.style.display = 'block';  // Muestra el indicador de carga
+
+            // Espera 300 ms antes de realizar la solicitud AJAX
+            timeoutId = setTimeout(() => {
+                fetch(`/buscar-contactos/?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        contactosTable.innerHTML = data.html;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        contactosTable.innerHTML = '<p>Error al cargar los resultados.</p>';
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';  // Oculta el indicador de carga
+                    });
+            }, 300);  // Retardo de 300 ms
+        });
+    });
+</script>
+
+<!-- Incluir FontAwesome para íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}

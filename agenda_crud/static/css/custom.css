@@ -1,0 +1,51 @@
+/* Ajustar el ancho de las columnas */
+.table th:nth-child(1), .table td:nth-child(1) { width: 25%; } /* Nombres */
+.table th:nth-child(2), .table td:nth-child(2) { width: 25%; } /* Apellidos */
+.table th:nth-child(3), .table td:nth-child(3) { width: 10%; } /* Teléfono */
+.table th:nth-child(4), .table td:nth-child(4) { width: 25%; } /* Email */
+.table th:nth-child(5), .table td:nth-child(5) { width: 25%; } /* Razón Social */
+.table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Observaciones */
+.table th:nth-child(7), .table td:nth-child(7) { width: 10%; } /* Fecha de Registro */
+.table th:nth-child(8), .table td:nth-child(8) { width: 10%; } /* Creado Por */
+.table th:nth-child(9), .table td:nth-child(9) { width: 10%; } /* Modificado Por */
+.table th:nth-child(10), .table td:nth-child(10) { width: 10%; } /* Acciones */
+
+
+/* Estilos para la tabla */
+.table {
+    border-collapse: collapse;  /* Fusiona los bordes de las celdas */
+    width: 100%;
+}
+
+.table th, .table td {
+    border: 1px solid #dee2e6;  /* Grosor delgado y color suave */
+    padding: 8px;               /* Espaciado interno */
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;  /* Línea más gruesa en el encabezado */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);  /* Fondo rayado */
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);  /* Efecto hover */
+}
+
+/* Reducir el tamaño del texto de la tabla */
+.table {
+    font-size: 0.9em;  /* Tamaño de fuente más pequeño */
+}
+
+/* Ajustar el espaciado de las celdas */
+.table th, .table td {
+    padding: 6px;  /* Reducir el espaciado interno */
+}
+
+/* Aumentar el tamaño del texto de la cabecera */
+.table th {
+    font-size: 0.8em; /* Puedes ajustar este valor según tus necesidades */
+    font-weight: bold; /* Opcional: para que el texto sea más grueso */
+}

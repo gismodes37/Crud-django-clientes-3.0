@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Agenda{% endblock %}
+
+{% block content %}
+<!-- Fondo moderno con gradiente -->
+<div class="bg-gradient-primary text-white py-5" style="background: linear-gradient(135deg, #007bff, #00bcd4);">
+    <div class="container">
+        <div class="text-center">
+            <!-- Mensaje de bienvenida -->
+            <h1 class="display-4">Bienvenido a la Agenda, {{ user_name }}</h1>
+            <p class="lead">Gestiona tus contactos de manera fácil y rápida.</p>
+
+            <!-- Mostrar mensajes de Django -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Botones de acción -->
+            <div class="mt-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'contact_list' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-address-book"></i> Ver Contactos
+                    </a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección adicional (opcional) -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <div class="card shadow-sm p-4">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h3>Gestiona Contactos</h3>
+                <p class="text-muted">Organiza y mantén actualizada tu lista de contactos.</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card shadow-sm p-4">
+                <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                <h3>Búsqueda Rápida</h3>
+                <p class="text-muted">Encuentra contactos en segundos con nuestra búsqueda avanzada en tiempo real.</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card shadow-sm p-4">
+                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                <h3>Seguridad</h3>
+                <p class="text-muted">Tus datos están protegidos con las mejores prácticas de seguridad.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir FontAwesome para íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
