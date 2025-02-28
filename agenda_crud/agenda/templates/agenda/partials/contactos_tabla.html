@@ -12,7 +12,7 @@
                 <th class="text-center">Creado Por</th>
                 <th class="text-center">Modificado Por</th>
                 <th class="text-center">PDF</th>
-                <th colSpan="3" class="centrado">Acciones</th>
+                <th class="text-center" colSpan="3" class="centrado">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -21,9 +21,9 @@
                 <tr>
                     <td>{{ contact.nombres }}</td>
                     <td>{{ contact.apellidos }}</td>
-                    <td>{{ contact.telefono }}</td>
+                    <td style="white-space: nowrap; width: auto;">{{ contact.telefono }}</td>
                     <td>{{ contact.email }}</td>
-                    <td>{{ contact.razon_social }}</td>
+                    <td style="white-space: nowrap; width: auto;">{{ contact.razon_social }}</td>
                     <td>{{ contact.observaciones|truncatechars:30 }}</td>
                     <td>{{ contact.fecha_registro|date:"d/m/Y" }}</td>
                     <td>{{ contact.creado_por.username }}</td>
