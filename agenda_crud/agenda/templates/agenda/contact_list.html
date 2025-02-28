@@ -7,7 +7,7 @@
     <!-- Título de la página -->
     <h1 class="text-center mb-4">Lista de Contactos</h1>
 
-    <!-- Campo de búsqueda -->
+    <!-- Campo de búsqueda 
     <div class="row justify-content-center mb-4">
         <div class="col-md-8 col-lg-6">
             <form method="get" class="input-group shadow-sm">
@@ -17,10 +17,10 @@
                 </button>
             </form>
         </div>
-    </div>
+    </div-->
 
     <!-- Indicador de carga -->
-    <div id="loading" style="display: none; text-align: center; margin: 20px;">
+    <div id="loading" style="display: none; text-align: center; margin: 20px; padding: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 5px;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Cargando...</span>
         </div>
@@ -28,8 +28,8 @@
     </div>
 
     <!-- Botón para crear nuevo contacto -->
-    <div class="text-center mb-4">
-        <a href="{% url 'contact_create' %}" class="btn btn-primary">
+    <div class="text-center mb-4 mt-3">
+        <a href="{% url 'contact_create' %}" class="btn btn-outline-primary">
             <i class="fas fa-plus"></i> Crear Nuevo Contacto
         </a>
     </div>

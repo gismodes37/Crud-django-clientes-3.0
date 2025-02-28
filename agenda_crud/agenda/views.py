@@ -134,11 +134,14 @@ def contact_list(request):
         contacts = paginator.page(1)
     return render(request, 'agenda/contact_list.html', {'contacts': contacts, 'query': query})
 
+
+
 # Búsqueda de contactos en AJAX
 def buscar_contactos(request):
     query = request.GET.get('q', '').strip()
     if len(query) < 2:
         return JsonResponse({'html': '<p>Ingresa al menos 2 caracteres para buscar.</p>'})
+    
     contacts = Contact.objects.filter(
         Q(nombres__icontains=query) |
         Q(apellidos__icontains=query) |

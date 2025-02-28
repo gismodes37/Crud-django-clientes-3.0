@@ -11,41 +11,100 @@
 .table th:nth-child(10), .table td:nth-child(10) { width: 10%; } /* Acciones */
 
 
-/* Estilos para la tabla */
-.table {
-    border-collapse: collapse;  /* Fusiona los bordes de las celdas */
+/* Estilos para la tabla 
+/* Estilos generales de la tabla */
+table {
     width: 100%;
+    border-collapse: collapse;
+    font-family: 'Open Sans', sans-serif; /* Fuente recomendada */
+    font-size: 12px;
+    color: #333;
 }
 
-.table th, .table td {
-    border: 1px solid #dee2e6;  /* Grosor delgado y color suave */
-    padding: 8px;               /* Espaciado interno */
+/* Estilos del encabezado */
+.table thead th, .table thead td {
+    background-color: #070707;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid #ddd;
 }
 
-.table thead th {
-    border-bottom: 2px solid #dee2e6;  /* Línea más gruesa en el encabezado */
+/* Estilos de las celdas */
+.table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #070606; /*original: eee*/
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);  /* Fondo rayado */
+/* Estilos de las filas alternas */
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
-.table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.075);  /* Efecto hover */
+/* Estilos al pasar el ratón por las filas */
+.table tbody tr:hover {
+    background-color: #f0f8ff;
 }
 
-/* Reducir el tamaño del texto de la tabla */
-.table {
-    font-size: 0.9em;  /* Tamaño de fuente más pequeño */
+/* Estilos de los botones de acción */
+.table .btn {
+    padding: 6px 10px;
+    font-size: 13px;
+    margin-right: 2px;
 }
 
-/* Ajustar el espaciado de las celdas */
-.table th, .table td {
-    padding: 6px;  /* Reducir el espaciado interno */
+/* Estilos de la columna de acciones */
+.table td.text-center {
+    text-align: center;
 }
 
-/* Aumentar el tamaño del texto de la cabecera */
-.table th {
-    font-size: 0.8em; /* Puedes ajustar este valor según tus necesidades */
-    font-weight: bold; /* Opcional: para que el texto sea más grueso */
+/* Estilos para el mensaje "Sin PDF" */
+.table .text-muted {
+    font-style: italic;
+    color: #999;
+}
+
+/* Estilos para la paginación */
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .page-link {
+    padding: 8px 12px;
+    margin: 0 3px;
+    border: 1px solid #ddd;
+    color: #337ab7;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #337ab7;
+    border-color: #337ab7;
+    color: #fff;
+}
+
+/* Estilos para el indicador de carga */
+#loading {
+    text-align: center;
+    margin: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+}
+
+/**********************/
+
+/* Ejemplo de personalización de colores */
+.navbar-dark {
+    background-color: #343a40; /* Cambia el color de la barra de navegación */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Cambia el color del botón primario */
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Cambia el color del botón primario al pasar el ratón */
+    border-color: #0056b3;
 }

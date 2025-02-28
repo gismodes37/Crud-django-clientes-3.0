@@ -39,8 +39,8 @@ class Contact(models.Model):
     )
     nombres = models.CharField(max_length=100, blank=True, null=True)  # Opcional
     apellidos = models.CharField(max_length=100, blank=True, null=True)  # Opcional
-    telefono = models.CharField(max_length=15, unique=True, blank=True, null=True)  # Opcional
-    email = models.EmailField(unique=True, blank=True, null=True)  # Opcional
+    telefono = models.CharField(max_length=15, blank=True, null=True)  # Opcional
+    email = models.EmailField(blank=True, null=True)  # Opcional
     razon_social = models.CharField(max_length=100, blank=True, null=True)  # Opcional
     rut = models.CharField(max_length=12, blank=True, null=True)  # Opcional
     fecha_registro = models.DateTimeField(default=timezone.now)
