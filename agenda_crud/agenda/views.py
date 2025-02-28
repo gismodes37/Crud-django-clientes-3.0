@@ -162,7 +162,7 @@ def contact_detail(request, pk):
 @login_required
 def contact_create(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST, request.FILES)  # Asegúrate de incluir request.FILES
+        form = ContactForm(request.POST, request.FILES)
         if form.is_valid():
             contact = form.save(commit=False)
             contact.creado_por = request.user
@@ -178,7 +178,7 @@ def contact_create(request):
 def contact_update(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
     if request.method == 'POST':
-        form = ContactForm(request.POST, request.FILES, instance=contact)  # Asegúrate de incluir request.FILES
+        form = ContactForm(request.POST, request.FILES, instance=contact)
         if form.is_valid():
             form.save()
             return redirect('contact_list')

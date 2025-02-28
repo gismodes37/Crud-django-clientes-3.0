@@ -14,6 +14,13 @@
                     <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">  <!-- Añadir enctype -->
                         {% csrf_token %}
                         <div class="mb-3">
+                            <label for="id_numero_registro" class="form-label">
+                                <i class="fas fa-hashtag"></i> Número de Registro
+                            </label>
+                            {{ form.numero_registro }}
+                            <small class="form-text text-muted">Formato: 0000-000</small>
+                        </div>
+                        <div class="mb-3">
                             <label for="id_nombres" class="form-label">
                                 <i class="fas fa-user"></i> Nombres
                             </label>
