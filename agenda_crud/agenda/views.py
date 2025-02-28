@@ -132,7 +132,7 @@ def contact_list(request):
         contacts = paginator.page(page)
     except (PageNotAnInteger, EmptyPage):
         contacts = paginator.page(1)
-    return render(request, 'agenda/contact_list.html', {'contacts': contacts, 'query': query,})
+    return render(request, 'agenda/contact_list.html', {'contacts': contacts, 'query': query})
 
 # Búsqueda de contactos en AJAX
 def buscar_contactos(request):
@@ -149,30 +149,44 @@ def buscar_contactos(request):
     html = render_to_string('agenda/partials/contactos_tabla.html', {'contacts': contacts})
     return JsonResponse({'html': html})
 
+
+
 # CRUD de Contactos
 @login_required
 def contact_detail(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
     return render(request, 'agenda/contact_detail.html', {'contact': contact})
 
+
+
 @login_required
 def contact_create(request):
-    form = ContactForm(request.POST or None)
-    if form.is_valid():
-        contact = form.save(commit=False)
-        contact.creado_por = request.user
-        contact.save()
-        return redirect('contact_list')
+    if request.method == 'POST':
+        form = ContactForm(request.POST, request.FILES)  # Asegúrate de incluir request.FILES
+        if form.is_valid():
+            contact = form.save(commit=False)
+            contact.creado_por = request.user
+            contact.save()
+            return redirect('contact_list')
+    else:
+        form = ContactForm()
     return render(request, 'agenda/contact_form.html', {'form': form})
+
+
 
 @login_required
 def contact_update(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
-    form = ContactForm(request.POST or None, instance=contact)
-    if form.is_valid():
-        form.save()
-        return redirect('contact_list')
+    if request.method == 'POST':
+        form = ContactForm(request.POST, request.FILES, instance=contact)  # Asegúrate de incluir request.FILES
+        if form.is_valid():
+            form.save()
+            return redirect('contact_list')
+    else:
+        form = ContactForm(instance=contact)
     return render(request, 'agenda/contact_form.html', {'form': form})
+
+
 
 @login_required
 def contact_delete(request, pk):
@@ -181,6 +195,8 @@ def contact_delete(request, pk):
         contact.delete()
         return redirect('contact_list')
     return render(request, 'agenda/contact_confirm_delete.html', {'contact': contact})
+
+
 
 # Logout personalizado
 class CustomLogoutView(LogoutView):

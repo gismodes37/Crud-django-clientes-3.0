@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agenda_db',  # Nombre de la base de datos  --  scorstqh_agenda_db
         'USER': 'scorpion',  # Usuario de MySQL  --  scorstqh_scorpion	
-        'PASSWORD': 'angE#2964',  # Contraseña de MySQL  --  angE#2964#1521
+        'PASSWORD': 'nenA2964',  # Contraseña de MySQL  --  angE#2964#1521
         'HOST': 'localhost',  # Host de la base de datos
         'PORT': '3306',  # Puerto de MySQL (por defecto es 3306)
         'OPTIONS': {
@@ -148,3 +148,7 @@ AUTH_USER_MODEL = 'agenda.User'
 LOGIN_REDIRECT_URL = 'home'
 
 #LOGOUT_REDIRECT_URL = 'home'  # Redirige al usuario a la página de inicio después de cerrar sesión
+
+# Configuración de archivos multimedia
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

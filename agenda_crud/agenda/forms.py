@@ -13,4 +13,4 @@ class UserRegisterForm(UserCreationForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
-        fields = ['nombres', 'apellidos', 'telefono', 'email', 'razon_social', 'observaciones']
+        fields = ['nombres', 'apellidos', 'telefono', 'email', 'razon_social', 'observaciones', 'pdf']  # Añadir 'pdf' al formulario

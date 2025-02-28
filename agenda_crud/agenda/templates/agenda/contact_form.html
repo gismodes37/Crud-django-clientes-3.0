@@ -11,7 +11,7 @@
                     <h3 class="text-center">{% if form.instance.pk %}Editar{% else %}Crear{% endif %} Contacto</h3>
                 </div>
                 <div class="card-body">
-                    <form method="post" class="needs-validation" novalidate>
+                    <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">  <!-- Añadir enctype -->
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="id_nombres" class="form-label">
@@ -48,11 +48,12 @@
                                 <i class="fas fa-sticky-note"></i> Observaciones
                             </label>
                             {{ form.observaciones }}
-                            <script>
-                                // Ajustar el tamaño del textarea
-                                document.getElementById("id_observaciones").rows = 4;  // Altura en filas
-                                document.getElementById("id_observaciones").cols = 40; // Ancho en columnas
-                            </script>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_pdf" class="form-label">
+                                <i class="fas fa-file-pdf"></i> Archivo PDF
+                            </label>
+                            {{ form.pdf }}
                         </div>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="submit" class="btn btn-primary me-md-2">
@@ -68,16 +69,4 @@
         </div>
     </div>
 </div>
-
-<!-- Estilos personalizados para el textarea -->
-<style>
-    #id_observaciones {
-        width: 100%; /* Ancho completo del contenedor */
-        height: 120px; /* Altura en píxeles */
-        resize: vertical; /* Permite redimensionar verticalmente */
-    }
-</style>
-
-<!-- Incluir FontAwesome para íconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}

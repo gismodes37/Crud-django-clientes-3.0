@@ -15,6 +15,11 @@
             <p class="card-text"><strong>Fecha de Registro:</strong> {{ contact.fecha_registro|date:"d/m/Y H:i" }}</p>
             <p class="card-text"><strong>Creado Por:</strong> {{ contact.creado_por.username }}</p>
             <p class="card-text"><strong>Modificado Por:</strong> {{ contact.modificado_por.username|default:"No modificado" }}</p>
+            {% if contact.pdf %}
+                <p class="card-text"><strong>PDF:</strong> <a href="{{ contact.pdf.url }}" target="_blank">Ver PDF</a></p>
+            {% else %}
+                <p class="card-text"><strong>PDF:</strong> No hay PDF asociado.</p>
+            {% endif %}
         </div>
     </div>
     <div class="mt-3">

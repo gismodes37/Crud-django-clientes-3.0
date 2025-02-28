@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from agenda.views import home  # Importa la vista home
 from agenda.views import CustomLogoutView  # Importa la vista personalizada
-#from .views import register  # Importa la vista de registro
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -28,6 +28,9 @@ urlpatterns = [
     path('', include('agenda.urls')),  # Incluye las URLs de la aplicación 'agenda'
     path('accounts/', include('django.contrib.auth.urls')),  # Incluye las URLs de autenticación de Django
     path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),  # Usa la vista personalizada
-    #path('accounts/register/', register, name='register'),  # URL de registro
 
 ]
+
+# Solo en modo DEBUG, sirve archivos multimedia (como PDFs)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
