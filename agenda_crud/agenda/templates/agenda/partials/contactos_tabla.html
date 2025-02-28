@@ -9,7 +9,7 @@
                     <th class="text-center">Teléfono</th>
                     <th class="text-center">Email</th>
                     <th class="text-center">Razón Social</th>
-                    <th class="text-center">Observaciones</th>
+                    <th class="text-center">Rut</th>
                     <th class="text-center">Fecha de Registro</th>
                     <th class="text-center">Creado Por</th>
                     <th class="text-center">Modificado Por</th>
@@ -28,7 +28,7 @@
                     <td style="white-space: nowrap; width: auto;">{{ contact.telefono }}</td>
                     <td>{{ contact.email }}</td>
                     <td style="white-space: nowrap; width: auto;" >{{ contact.razon_social }}</td>
-                    <td>{{ contact.observaciones|truncatechars:30 }}</td>
+                    <td style="white-space: nowrap; width: auto;">{{ contact.rut}}</td>
                     <td>{{ contact.fecha_registro|date:"d/m/Y" }}</td>
                     <td>{{ contact.creado_por.username }}</td>
                     <td>{{ contact.modificado_por.username|default:"" }}</td>

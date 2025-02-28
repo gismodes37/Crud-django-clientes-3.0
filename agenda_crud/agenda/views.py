@@ -72,7 +72,7 @@ def upload_csv(request):
             return redirect('upload_csv')
 
         csv_reader = csv.DictReader(file_content)
-        required_columns = {'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Observaciones'}
+        required_columns = {'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'}
 
         if not required_columns.issubset(csv_reader.fieldnames):
             messages.error(request, 'El archivo CSV no tiene el formato correcto.')
@@ -86,7 +86,7 @@ def upload_csv(request):
                     telefono=row['Teléfono'],
                     email=row['Email'],
                     razon_social=row['Razón Social'],
-                    observaciones=row['Observaciones'],
+                    rut=row['Rut'],
                     creado_por=request.user,
                         modificado_por=request.user,  # ← Asigna el usuario que lo modifica
 
@@ -108,9 +108,9 @@ def download_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="contactos.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Observaciones'])
+    writer.writerow(['Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'])
     for contacto in Contact.objects.all():
-        writer.writerow([contacto.nombres, contacto.apellidos, contacto.telefono, contacto.email, contacto.razon_social, contacto.observaciones])
+        writer.writerow([contacto.nombres, contacto.apellidos, contacto.telefono, contacto.email, contacto.razon_social, contacto.rut])
     return response
 
 # Listado de contactos
@@ -162,14 +162,18 @@ def contact_detail(request, pk):
 @login_required
 def contact_create(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST, request.FILES)
+        form = ContactForm(request.POST, request.FILES)  # Asegúrate de incluir request.FILES si hay archivos
         if form.is_valid():
             contact = form.save(commit=False)
-            contact.creado_por = request.user
-            contact.save()
-            return redirect('contact_list')
+            contact.creado_por = request.user  # Asigna el usuario que crea el contacto
+            contact.save()  # Guarda el contacto en la base de datos
+            return redirect('contact_list')  # Redirige a la lista de contactos después de guardar
+        else:
+            # Si el formulario no es válido, muestra los errores en la plantilla
+            print("Errores en el formulario:", form.errors)  # Depuración: imprime errores en la consola
     else:
-        form = ContactForm()
+        form = ContactForm()  # Muestra un formulario vacío para GET requests
+
     return render(request, 'agenda/contact_form.html', {'form': form})
 
 
@@ -180,7 +184,9 @@ def contact_update(request, pk):
     if request.method == 'POST':
         form = ContactForm(request.POST, request.FILES, instance=contact)
         if form.is_valid():
-            form.save()
+            contact = form.save(commit=False)
+            contact.modificado_por = request.user  # Asigna el usuario que realiza la modificación
+            contact.save()
             return redirect('contact_list')
     else:
         form = ContactForm(instance=contact)

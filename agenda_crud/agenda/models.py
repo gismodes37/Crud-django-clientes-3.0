@@ -34,17 +34,19 @@ class Contact(models.Model):
         unique=True,  # Asegura que no haya duplicados
         verbose_name="Número de Registro",
         help_text="Formato: 0000-000",
+        blank=True,  # Permite que el campo esté vacío
+        null=True,   # Permite valores nulos en la base de datos
     )
-    nombres = models.CharField(max_length=100)
-    apellidos = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=15, unique=True)
-    email = models.EmailField(unique=True)
-    razon_social = models.CharField(max_length=100)
-    observaciones = models.TextField(blank=True, default="")
+    nombres = models.CharField(max_length=100, blank=True, null=True)  # Opcional
+    apellidos = models.CharField(max_length=100, blank=True, null=True)  # Opcional
+    telefono = models.CharField(max_length=15, unique=True, blank=True, null=True)  # Opcional
+    email = models.EmailField(unique=True, blank=True, null=True)  # Opcional
+    razon_social = models.CharField(max_length=100, blank=True, null=True)  # Opcional
+    rut = models.CharField(max_length=12, blank=True, null=True)  # Opcional
     fecha_registro = models.DateTimeField(default=timezone.now)
     creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='contactos_creados')
     modificado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='contactos_modificados')
-    pdf = models.FileField(upload_to='pdfs/', blank=True, null=True)
+    pdf = models.FileField(upload_to='pdfs/', blank=True, null=True)  # Opcional
 
     def __str__(self):
         return f"{self.nombres} {self.apellidos}"
@@ -52,7 +54,7 @@ class Contact(models.Model):
     def clean(self):
         super().clean()
         # Validación del formato del número de registro
-        if not re.match(r'^\d{4}-\d{3}$', self.numero_registro):
+        if self.numero_registro and not re.match(r'^\d{4}-\d{3}$', self.numero_registro):
             raise ValidationError({
                 'numero_registro': 'El número de registro debe tener el formato 0000-000.'
             })

@@ -11,7 +11,7 @@
             <p class="card-text"><strong>Teléfono:</strong> {{ contact.telefono }}</p>
             <p class="card-text"><strong>Email:</strong> {{ contact.email }}</p>
             <p class="card-text"><strong>Razón Social:</strong> {{ contact.razon_social }}</p>
-            <p class="card-text"><strong>Observaciones:</strong> {{ contact.observaciones|linebreaks }}</p>
+            <p class="card-text"><strong>Rut:</strong> {{ contact.rut}}</p>
             <p class="card-text"><strong>Fecha de Registro:</strong> {{ contact.fecha_registro|date:"d/m/Y H:i" }}</p>
             <p class="card-text"><strong>Creado Por:</strong> {{ contact.creado_por.username }}</p>
             <p class="card-text"><strong>Modificado Por:</strong> {{ contact.modificado_por.username|default:"No modificado" }}</p>
