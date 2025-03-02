@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.core.exceptions import FieldError
 
 import csv
 import chardet
@@ -116,8 +117,23 @@ def download_csv(request):
 # Listado de contactos
 @login_required
 def contact_list(request):
-    query = request.GET.get('q', '')
-    contacts = Contact.objects.all()
+    query = request.GET.get('q', '')  # Parámetro de búsqueda
+    order_by = request.GET.get('order_by', 'numero_registro')  # Columna de ordenación
+    order = request.GET.get('order', 'asc')  # Orden (asc o desc)
+
+    # Aplicar el orden
+    if order == 'desc':
+        order_by = f'-{order_by}'  # Agregar un guion para orden descendente
+    else:
+        order_by = f'{order_by}'  # Mantener orden ascendente
+
+    # Obtener todos los registros ordenados antes de la paginación
+    try:
+        contacts = Contact.objects.all().order_by(order_by)
+    except FieldError:
+        contacts = Contact.objects.all().order_by('numero_registro')
+
+    # Filtrar por búsqueda si hay un query
     if query:
         contacts = contacts.filter(
             Q(nombres__icontains=query) |
@@ -126,14 +142,24 @@ def contact_list(request):
             Q(email__icontains=query) |
             Q(razon_social__icontains=query)
         )
-    paginator = Paginator(contacts, 10)
+
+    # Aplicar paginación
+    paginator = Paginator(contacts, 10)  # 10 registros por página
     page = request.GET.get('page')
+
     try:
         contacts = paginator.page(page)
-    except (PageNotAnInteger, EmptyPage):
+    except PageNotAnInteger:
         contacts = paginator.page(1)
-    return render(request, 'agenda/contact_list.html', {'contacts': contacts, 'query': query})
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
 
+    return render(request, 'agenda/contact_list.html', {
+        'contacts': contacts,
+        'query': query,
+        'order_by': request.GET.get('order_by', 'numero_registro'),  # Mantener la clave correcta en la URL
+        'order': order,
+    })
 
 
 # Búsqueda de contactos en AJAX

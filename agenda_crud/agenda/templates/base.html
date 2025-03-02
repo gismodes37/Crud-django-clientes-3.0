@@ -80,18 +80,18 @@
         document.addEventListener("DOMContentLoaded", function() {
             const searchInput = document.getElementById('search-input');
             const searchForm = document.getElementById('search-form');
-
+            const contactosTable = document.getElementById('contactos-table');
+        
             searchInput.addEventListener('input', function() {
                 const query = this.value.trim();
-
+        
                 if (query.length >= 2) {  // Solo busca si hay al menos 2 caracteres
                     fetch(`/buscar-contactos/?q=${query}`)
                         .then(response => response.json())
                         .then(data => {
                             // Actualiza la tabla de contactos con los resultados
-                            const contactList = document.getElementById('contactos-table');
-                            if (contactList) {
-                                contactList.innerHTML = data.html;
+                            if (contactosTable) {
+                                contactosTable.innerHTML = data.html;
                             }
                         })
                         .catch(error => {
@@ -102,9 +102,8 @@
                     fetch(`/buscar-contactos/?q=`)
                         .then(response => response.json())
                         .then(data => {
-                            const contactList = document.getElementById('contactos-table');
-                            if (contactList) {
-                                contactList.innerHTML = data.html;
+                            if (contactosTable) {
+                                contactosTable.innerHTML = data.html;
                             }
                         })
                         .catch(error => {
@@ -112,11 +111,93 @@
                         });
                 }
             });
-
+        
             // Evita que el formulario se envíe y recargue la página
             searchForm.addEventListener('submit', function(event) {
                 event.preventDefault();
             });
+        });
+        Verifica la vista de Django:
+        Asegúrate de que tu vista en Django esté manejando correctamente el caso en el que el parámetro de búsqueda (q) esté vacío. Aquí te dejo un ejemplo de cómo podría ser tu vista:
+        
+        python
+        Copy
+        from django.shortcuts import render
+        from .models import Cliente
+        
+        def buscar_clientes(request):
+            query = request.GET.get('q', '').strip()  # Obtén el valor del campo de búsqueda
+            if query:
+                clientes = Cliente.objects.filter(nombre__icontains=query)  # Filtra los clientes
+            else:
+                clientes = Cliente.objects.all()  # Si no hay query, devuelve todos los clientes
+        
+            # Renderiza la tabla de contactos como un fragmento HTML
+            return render(request, 'agenda/partials/contactos_tabla.html', {'contacts': clientes})
+        
+    </script>
+
+    <!-- Script para la ordenacion -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sortIcons = document.querySelectorAll(".sort-icon");
+        
+            sortIcons.forEach(icon => {
+                icon.addEventListener("click", function() {
+                    const column = this.getAttribute("data-column"); // Columna a ordenar
+                    const currentOrder = this.getAttribute("data-order") || "asc"; // Orden actual
+        
+                    // Cambiar el ícono y el orden
+                    if (currentOrder === "asc") {
+                        this.innerHTML = '<i class="fas fa-sort-up"></i>'; // Ícono ascendente
+                        this.setAttribute("data-order", "desc");
+                    } else {
+                        this.innerHTML = '<i class="fas fa-sort-down"></i>'; // Ícono descendente
+                        this.setAttribute("data-order", "asc");
+                    }
+        
+                    // Llamar a la función de ordenación
+                    sortTable(column, currentOrder);
+                });
+            });
+        
+            function sortTable(column, order) {
+                const table = document.querySelector(".table");
+                const tbody = table.querySelector("tbody");
+                const rows = Array.from(tbody.querySelectorAll("tr"));
+        
+                // Obtener el índice de la columna
+                const columnIndex = getColumnIndex(column);
+        
+                // Ordenar las filas
+                rows.sort((a, b) => {
+                    const aValue = a.querySelector(`td:nth-child(${columnIndex})`).textContent.trim().toLowerCase();
+                    const bValue = b.querySelector(`td:nth-child(${columnIndex})`).textContent.trim().toLowerCase();
+        
+                    if (order === "asc") {
+                        return aValue.localeCompare(bValue, 'es', { sensitivity: 'base' });
+                    } else {
+                        return bValue.localeCompare(aValue, 'es', { sensitivity: 'base' });
+                    }
+                });
+        
+                // Reemplazar las filas en la tabla
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild); // Limpiar el tbody
+                }
+                rows.forEach(row => tbody.appendChild(row)); // Agregar las filas ordenadas
+            }
+        
+            function getColumnIndex(column) {
+                // Obtener el índice de la columna basado en el nombre
+                const headers = document.querySelectorAll(".table thead th, .table thead td");
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].getAttribute("data-column") === column) {
+                        return i + 1; // Devolver el índice de la columna (comienza en 1)
+                    }
+                }
+                return 1; // Por defecto, ordenar por la primera columna
+            }
         });
     </script>
 </body>

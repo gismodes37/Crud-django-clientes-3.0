@@ -78,7 +78,7 @@ table {
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #337ab7;
+    background-color: #0c0c0c;
     border-color: #337ab7;
     color: #fff;
 }
@@ -96,7 +96,7 @@ table {
 
 /* Ejemplo de personalización de colores */
 .navbar-dark {
-    background-color: #343a40; /* Cambia el color de la barra de navegación */
+    background-color: #00080f; /* Cambia el color de la barra de navegación  343a40 */
 }
 
 .btn-primary {
@@ -107,4 +107,39 @@ table {
 .btn-primary:hover {
     background-color: #0056b3; /* Cambia el color del botón primario al pasar el ratón */
     border-color: #0056b3;
+}
+
+/* Estilos para el footer de la tabla */
+/* Aumenta la especificidad para el footer de la tabla */
+.table tfoot.bg-dark {
+    background-color: #343a40 !important; /* Fondo oscuro */
+    color: white !important; /* Texto blanco */
+}
+
+.table tfoot.bg-dark td {
+    padding: 10px 12px !important; /* Ajusta el padding si es necesario */
+    border-top: 2px solid #ddd !important; /* Línea superior para separar el footer */
+}
+
+.table tfoot.bg-dark .pagination .page-link {
+    color: #343a40 !important; /* Color del texto de los enlaces de paginación */
+    background-color: white !important; /* Fondo de los enlaces de paginación */
+    border-color: #ddd !important; /* Borde de los enlaces de paginación */
+}
+
+.table tfoot.bg-dark .pagination .page-item.active .page-link {
+    background-color: #007bff !important; /* Fondo del enlace activo */
+    border-color: #007bff !important; /* Borde del enlace activo */
+    color: white !important; /* Texto del enlace activo */
+}
+
+
+/* Estilos para los íconos de ordenación */
+.sort-icon {
+    cursor: pointer; /* Cambia el cursor a pointer */
+    margin-left: 10px; /* Espacio entre el texto y el ícono */
+}
+
+.sort-icon i {
+    font-size: 14px; /* Tamaño del ícono */
 }

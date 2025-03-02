@@ -1,25 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}  <!-- Extiende la plantilla base.html -->
 
-{% block title %}Lista de Contactos - Agenda{% endblock %}
+{% block title %}Lista de Contactos - Agenda{% endblock %}  <!-- Título de la página -->
 
-{% block content %}
+{% block content %}  <!-- Inicio del bloque de contenido -->
 <div class="container-fluid mt-4">
     <!-- Título de la página -->
     <h1 class="text-center mb-4">Lista de Contactos</h1>
 
-    <!-- Campo de búsqueda 
-    <div class="row justify-content-center mb-4">
-        <div class="col-md-8 col-lg-6">
-            <form method="get" class="input-group shadow-sm">
-                <input type="text" id="search-input" class="form-control" placeholder="Buscar contactos..." value="{{ query|default:'' }}">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-            </form>
-        </div>
-    </div-->
-
-    <!-- Indicador de carga -->
+    <!-- Indicador de carga (se muestra durante la búsqueda en tiempo real) -->
     <div id="loading" style="display: none; text-align: center; margin: 20px; padding: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 5px;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Cargando...</span>
@@ -29,7 +17,7 @@
 
     <!-- Botón para crear nuevo contacto -->
     <div class="text-center mb-4 mt-3">
-        <a href="{% url 'contact_create' %}" class="btn btn-outline-primary">
+        <a href="{% url 'contact_create' %}" class="btn btn-outline-primary btn-rounded">
             <i class="fas fa-plus"></i> Crear Nuevo Contacto
         </a>
     </div>
@@ -37,67 +25,35 @@
     <!-- Contenedor para la tabla de contactos -->
     <div id="contactos-table" class="card shadow-sm">
         <div class="card-body">
+            <!-- Incluye la tabla de contactos desde un archivo parcial -->
             {% include 'agenda/partials/contactos_tabla.html' with contacts=contacts %}
         </div>
     </div>
 
-    <!-- Navegación de paginación -->
-    <nav aria-label="Paginación" class="mt-4">
-        <ul class="pagination justify-content-center">
-            {% if contacts.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1&q={{ query }}" aria-label="Primera">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ contacts.previous_page_number }}&q={{ query }}" aria-label="Anterior">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-
-            <li class="page-item disabled">
-                <span class="page-link">
-                    Página {{ contacts.number }} de {{ contacts.paginator.num_pages }}
-                </span>
-            </li>
-
-            {% if contacts.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ contacts.next_page_number }}&q={{ query }}" aria-label="Siguiente">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ contacts.paginator.num_pages }}&q={{ query }}" aria-label="Última">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+    <!-- Nota: La paginación ahora está dentro del footer de la tabla en contactos_tabla.html -->
 </div>
 
 <!-- Script para la búsqueda en tiempo real -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const searchInput = document.getElementById('search-input');
-        const contactosTable = document.getElementById('contactos-table');
-        const loading = document.getElementById('loading');  // Referencia al indicador de carga
-        let timeoutId;
+        const searchInput = document.getElementById('search-input');  // Campo de búsqueda
+        const contactosTable = document.getElementById('contactos-table');  // Tabla de contactos
+        const loading = document.getElementById('loading');  // Indicador de carga
+        let timeoutId;  // Para manejar el retardo en la búsqueda
 
+        // Evento que se activa al escribir en el campo de búsqueda
         searchInput.addEventListener('input', function() {
             clearTimeout(timeoutId);  // Cancela el timeout anterior
-            const query = this.value;
+            const query = this.value;  // Obtiene el valor del campo de búsqueda
 
             loading.style.display = 'block';  // Muestra el indicador de carga
 
-            // Espera 300 ms antes de realizar la solicitud AJAX
+            // Espera 300 ms antes de realizar la solicitud AJAX (para evitar múltiples solicitudes rápidas)
             timeoutId = setTimeout(() => {
-                fetch(`/buscar-contactos/?q=${query}`)
-                    .then(response => response.json())
+                fetch(`/buscar-contactos/?q=${query}`)  // Realiza la solicitud AJAX
+                    .then(response => response.json())  // Convierte la respuesta a JSON
                     .then(data => {
+                        // Actualiza la tabla de contactos con los resultados
                         contactosTable.innerHTML = data.html;
                     })
                     .catch(error => {
@@ -114,4 +70,4 @@
 
 <!-- Incluir FontAwesome para íconos -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-{% endblock %}
+{% endblock %}  <!-- Fin del bloque de contenido -->
