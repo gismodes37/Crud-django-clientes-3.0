@@ -109,12 +109,22 @@ table {
     border-color: #0056b3;
 }
 
-/* Estilos para el footer de la tabla */
-/* Aumenta la especificidad para el footer de la tabla */
-.table tfoot.bg-dark {
-    background-color: #343a40 !important; /* Fondo oscuro */
-    color: white !important; /* Texto blanco */
+/* Estilos para el footer de la tabla 
+.table tfoot {
+    --bs-table-bg: #343a40; /* Fondo oscuro 
+    color: #ffffff;         /* Texto blanco 
+}*/
+
+/* Estilos del encabezado y pie de la tabla */
+.table thead th, .table tfoot td {
+    background-color: #070707; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid #ddd;
 }
+
 
 .table tfoot.bg-dark td {
     padding: 10px 12px !important; /* Ajusta el padding si es necesario */

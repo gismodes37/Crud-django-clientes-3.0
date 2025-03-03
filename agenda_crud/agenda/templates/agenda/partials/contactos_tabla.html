@@ -5,7 +5,7 @@
  <!-- Columna N° de Registro -->
 <td class="text-center">
     <div class="d-flex justify-content-between align-items-center">
-        <span>N° de Registro</span>
+        <span>Cotización</span>
         <span class="sort-icon" data-column="numero_registro">
             <a href="?order_by=numero_registro&order={% if order_by == 'numero_registro' and order == 'asc' %}desc{% else %}asc{% endif %}">
                 <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
@@ -40,7 +40,7 @@
 
                 <!-- Otras columnas (sin ordenación) -->
                 <th class="text-center">Teléfono</th>
-                <th class="text-center">Email</th>
+                <th class="text-center">E-mail</th>
                 <th class="text-center">Razón Social</th>
                 <th class="text-center">Rut</th>
                 <th class="text-center">Fecha de Registro</th>
@@ -100,7 +100,7 @@
         <!-- Footer de la tabla con la paginación -->
         <tfoot class="bg-dark text-white">
             <tr>
-                <td colspan="12" class="text-center py-3">
+                <td colspan="14" class="text-center py-3">
                     <!-- Paginación -->
                     <nav aria-label="Paginación">
                         <ul class="pagination justify-content-center mb-0">

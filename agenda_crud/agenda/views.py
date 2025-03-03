@@ -57,14 +57,16 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
+
 # Vista para subir un archivo CSV
 @user_passes_test(es_administrador, login_url='/accounts/login/')
 def upload_csv(request):
-    if request.method == 'POST' and request.FILES['csv_file']:
+    if request.method == 'POST' and request.FILES.get('csv_file'):
         csv_file = request.FILES['csv_file']
         raw_data = csv_file.read()
 
-        # Detectar codificación
+        # Detectar codificación del archivo
         encoding = chardet.detect(raw_data)['encoding']
         try:
             file_content = raw_data.decode(encoding).splitlines()
@@ -73,24 +75,30 @@ def upload_csv(request):
             return redirect('upload_csv')
 
         csv_reader = csv.DictReader(file_content)
-        required_columns = {'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'}
+        required_columns = {'Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'}
 
         if not required_columns.issubset(csv_reader.fieldnames):
             messages.error(request, 'El archivo CSV no tiene el formato correcto.')
             return redirect('upload_csv')
 
         for row in csv_reader:
+            numero_registro = row.get('Número de Registro', '').strip()
+
+            # Verificar si el contacto ya existe para evitar duplicados
+            if Contact.objects.filter(numero_registro=numero_registro).exists():
+                continue  # Si ya existe, pasar al siguiente
+
             try:
                 contacto = Contact(
-                    nombres=row['Nombres'],
-                    apellidos=row['Apellidos'],
-                    telefono=row['Teléfono'],
-                    email=row['Email'],
-                    razon_social=row['Razón Social'],
-                    rut=row['Rut'],
+                    numero_registro=numero_registro or None,  # Evita errores con valores vacíos
+                    nombres=row['Nombres'].strip() or None,
+                    apellidos=row['Apellidos'].strip() or None,
+                    telefono=row['Teléfono'].strip() or None,
+                    email=row['Email'].strip() or None,
+                    razon_social=row['Razón Social'].strip() or None,
+                    rut=row['Rut'].strip() or None,
                     creado_por=request.user,
-                        modificado_por=request.user,  # ← Asigna el usuario que lo modifica
-
+                    modificado_por=request.user
                 )
                 contacto.full_clean()
                 contacto.save()
@@ -100,19 +108,40 @@ def upload_csv(request):
 
         messages.success(request, 'Archivo CSV subido y procesado correctamente.')
         return redirect('contact_list')
-    
+
     return render(request, 'agenda/upload_csv.html')
+
+
+
+
 
 # Vista para descargar contactos como CSV
 @user_passes_test(es_administrador, login_url='/accounts/login/')
 def download_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="contactos.csv"'
+
     writer = csv.writer(response)
-    writer.writerow(['Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'])
-    for contacto in Contact.objects.all():
-        writer.writerow([contacto.nombres, contacto.apellidos, contacto.telefono, contacto.email, contacto.razon_social, contacto.rut])
+    # Agregar la cabecera del CSV
+    writer.writerow(['Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'])
+
+    # Ordenar los contactos por número de registro antes de exportar
+    contactos = Contact.objects.all().order_by('numero_registro')
+
+    for contacto in contactos:
+        writer.writerow([
+            contacto.numero_registro or "",  
+            contacto.nombres or "",
+            contacto.apellidos or "",
+            contacto.telefono or "",
+            contacto.email or "",
+            contacto.razon_social or "",
+            contacto.rut or ""
+        ])
+
     return response
+
+
 
 # Listado de contactos
 @login_required
