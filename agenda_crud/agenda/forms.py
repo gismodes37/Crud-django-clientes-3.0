@@ -29,6 +29,7 @@ class ContactForm(forms.ModelForm):
         self.fields['email'].required = False
         self.fields['razon_social'].required = False
         self.fields['rut'].required = False
+        self.fields['direccion'].required = False
         self.fields['numero_registro'].required = False  # Asegúrate de que sea opcional
 
     def clean_numero_registro(self):

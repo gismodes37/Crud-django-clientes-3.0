@@ -42,7 +42,14 @@ class Contact(models.Model):
     telefono = models.CharField(max_length=15, blank=True, null=True)  # Opcional
     email = models.EmailField(blank=True, null=True)  # Opcional
     razon_social = models.CharField(max_length=100, blank=True, null=True)  # Opcional
-    rut = models.CharField(max_length=12, blank=True, null=True)  # Opcional
+    rut = models.CharField(
+        max_length=12, 
+        blank=True, 
+        null=True, 
+        help_text="Formato: 00.000.000-0", 
+        verbose_name="Número de Rut"
+    )  # Opcional
+    direccion = models.CharField(max_length=100, blank=True, null=True)  # Opcional
     fecha_registro = models.DateTimeField(default=timezone.now)
     creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='contactos_creados')
     modificado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='contactos_modificados')

@@ -84,7 +84,7 @@ def upload_csv(request):
         csv_reader = csv.DictReader(file_content)
         print("Cabeceras detectadas:", csv_reader.fieldnames)
 
-        required_columns = {'Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'}
+        required_columns = {'Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut', 'Dirección'}
         if not required_columns.issubset(csv_reader.fieldnames):
             messages.error(request, 'El archivo CSV no tiene el formato correcto.')
             print("ERROR: Cabeceras incorrectas:", csv_reader.fieldnames)
@@ -112,6 +112,7 @@ def upload_csv(request):
                     email=row.get('Email', '').strip() or None,
                     razon_social=row.get('Razón Social', '').strip() or None,
                     rut=row.get('Rut', '').strip() or None,  # 👈 Ahora ya no dará error
+                    direccion=row.get('Dirección', '').strip() or None,                    
                     creado_por=request.user,
                     modificado_por=request.user
                 )
@@ -138,7 +139,7 @@ def download_csv(request):
 
     writer = csv.writer(response)
     # Agregar la cabecera del CSV
-    writer.writerow(['Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'])
+    writer.writerow(['Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut', 'Dirección'])
 
     # Ordenar los contactos por número de registro antes de exportar
     contactos = Contact.objects.all().order_by('numero_registro')
@@ -151,7 +152,8 @@ def download_csv(request):
             contacto.telefono or "",
             contacto.email or "",
             contacto.razon_social or "",
-            contacto.rut or ""
+            contacto.rut or "",
+            contacto.direccion or ""
         ])
 
     return response
@@ -184,7 +186,8 @@ def contact_list(request):
             Q(apellidos__icontains=query) |
             Q(telefono__icontains=query) |
             Q(email__icontains=query) |
-            Q(razon_social__icontains=query)
+            Q(razon_social__icontains=query) |
+            Q(direccion__icontains=query)
         )
 
     # Aplicar paginación
@@ -218,7 +221,8 @@ def buscar_contactos(request):
         Q(apellidos__icontains=query) |
         Q(telefono__icontains=query) |
         Q(email__icontains=query) |
-        Q(razon_social__icontains=query)
+        Q(razon_social__icontains=query) |
+        Q(rut__icontains=query)
     )
     html = render_to_string('agenda/partials/contactos_tabla.html', {'contacts': contacts})
     return JsonResponse({'html': html})

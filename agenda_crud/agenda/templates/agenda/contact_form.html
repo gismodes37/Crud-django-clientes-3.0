@@ -62,7 +62,15 @@
                                 <i class="fas fa-sticky-note"></i> Rut
                             </label>
                             {{ form.rut }}
+                            <small class="form-text text-muted">Formato: 00.000.000-0</small>
                             {{ form.rut.errors }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_rut" class="form-label">
+                                <i class="fas fa-sticky-note"></i> Dirección
+                            </label>
+                            {{ form.direccion }}
+                            {{ form.direccion.errors }}
                         </div>
                         <div class="mb-3">
                             <label for="id_pdf" class="form-label">

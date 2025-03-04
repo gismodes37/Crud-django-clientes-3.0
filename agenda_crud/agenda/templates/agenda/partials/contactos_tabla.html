@@ -43,6 +43,7 @@
                 <th class="text-center">E-mail</th>
                 <th class="text-center">Razón Social</th>
                 <th class="text-center">Rut</th>
+                <th class="text-center">Dirección</th>
                 <th class="text-center">Fecha de Registro</th>
                 <th class="text-center">Creado Por</th>
                 <th class="text-center">Modificado Por</th>
@@ -62,6 +63,7 @@
                         <td>{{ contact.email }}</td>
                         <td style="white-space: nowrap; width: auto;">{{ contact.razon_social }}</td>
                         <td style="white-space: nowrap; width: auto;">{{ contact.rut }}</td>
+                        <td style="white-space: nowrap; width: auto;">{{ contact.direccion }}</td>
                         <td>{{ contact.fecha_registro|date:"d/m/Y" }}</td>
                         <td>{{ contact.creado_por.username }}</td>
                         <td>{{ contact.modificado_por.username|default:"" }}</td>
@@ -100,7 +102,7 @@
         <!-- Footer de la tabla con la paginación -->
         <tfoot class="bg-dark text-white">
             <tr>
-                <td colspan="14" class="text-center py-3">
+                <td colspan="15" class="text-center py-3">
                     <!-- Paginación -->
                     <nav aria-label="Paginación">
                         <ul class="pagination justify-content-center mb-0">
