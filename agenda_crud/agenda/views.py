@@ -21,14 +21,20 @@ import chardet
 from .models import Contact
 from .forms import UserRegisterForm, ContactForm
 
+
+
 # Función para verificar si el usuario es administrador
 def es_administrador(user):
     return user.is_authenticated and user.is_staff
+
+
 
 # Vista de inicio
 def home(request):
     user_name = request.user.username if request.user.is_authenticated else "Invitado"
     return render(request, 'agenda/home.html', {'user_name': user_name})
+
+
 
 # Vista de inicio de sesión personalizada
 def custom_login(request):
@@ -43,6 +49,8 @@ def custom_login(request):
         else:
             messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
     return render(request, 'registration/login.html')
+
+
 
 # Vista de registro de usuarios
 @user_passes_test(es_administrador, login_url='/accounts/login/')
@@ -66,47 +74,54 @@ def upload_csv(request):
         csv_file = request.FILES['csv_file']
         raw_data = csv_file.read()
 
-        # Detectar codificación del archivo
-        encoding = chardet.detect(raw_data)['encoding']
+        # Forzar decodificación en UTF-8
         try:
-            file_content = raw_data.decode(encoding).splitlines()
+            file_content = raw_data.decode('utf-8', errors='replace').splitlines()
         except UnicodeDecodeError:
-            messages.error(request, 'Error: No se pudo decodificar el archivo CSV.')
+            messages.error(request, 'Error: No se pudo decodificar el archivo CSV en UTF-8.')
             return redirect('upload_csv')
 
         csv_reader = csv.DictReader(file_content)
-        required_columns = {'Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'}
+        print("Cabeceras detectadas:", csv_reader.fieldnames)
 
+        required_columns = {'Número de Registro', 'Nombres', 'Apellidos', 'Teléfono', 'Email', 'Razón Social', 'Rut'}
         if not required_columns.issubset(csv_reader.fieldnames):
             messages.error(request, 'El archivo CSV no tiene el formato correcto.')
+            print("ERROR: Cabeceras incorrectas:", csv_reader.fieldnames)
             return redirect('upload_csv')
 
+        print("Contenido del archivo CSV:")
+        registros_creados = 0
+
         for row in csv_reader:
+            row = {k: v if v is not None else '' for k, v in row.items()}  # 👈 Convierte None en ''
+
+            print(row)  # 👈 Verifica que las filas sean correctas
+
             numero_registro = row.get('Número de Registro', '').strip()
 
-            # Verificar si el contacto ya existe para evitar duplicados
             if Contact.objects.filter(numero_registro=numero_registro).exists():
-                continue  # Si ya existe, pasar al siguiente
+                continue  # Si ya existe, saltar al siguiente
 
             try:
                 contacto = Contact(
-                    numero_registro=numero_registro or None,  # Evita errores con valores vacíos
-                    nombres=row['Nombres'].strip() or None,
-                    apellidos=row['Apellidos'].strip() or None,
-                    telefono=row['Teléfono'].strip() or None,
-                    email=row['Email'].strip() or None,
-                    razon_social=row['Razón Social'].strip() or None,
-                    rut=row['Rut'].strip() or None,
+                    numero_registro=numero_registro or None,
+                    nombres=row.get('Nombres', '').strip() or None,
+                    apellidos=row.get('Apellidos', '').strip() or None,
+                    telefono=row.get('Teléfono', '').strip() or None,
+                    email=row.get('Email', '').strip() or None,
+                    razon_social=row.get('Razón Social', '').strip() or None,
+                    rut=row.get('Rut', '').strip() or None,  # 👈 Ahora ya no dará error
                     creado_por=request.user,
                     modificado_por=request.user
                 )
                 contacto.full_clean()
                 contacto.save()
+                registros_creados += 1
             except (KeyError, ValidationError) as e:
-                messages.error(request, f'Error en el archivo CSV: {e}')
-                return redirect('upload_csv')
+                print(f"Error en {numero_registro}: {e}")
 
-        messages.success(request, 'Archivo CSV subido y procesado correctamente.')
+        messages.success(request, f'Se importaron {registros_creados} nuevos contactos.')
         return redirect('contact_list')
 
     return render(request, 'agenda/upload_csv.html')
@@ -189,6 +204,7 @@ def contact_list(request):
         'order_by': request.GET.get('order_by', 'numero_registro'),  # Mantener la clave correcta en la URL
         'order': order,
     })
+
 
 
 # Búsqueda de contactos en AJAX
