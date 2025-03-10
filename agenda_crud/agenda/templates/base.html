@@ -19,7 +19,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Agenda Scorpion-ER Ltda.</a>
+            <a class="navbar-brand" href="{% url 'home' %}">SG-CP Scorpion-ER Ltda.</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -28,28 +28,15 @@
                     <!-- Dropdown para Agenda -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="agendaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-address-book"></i> Agenda
+                            <i class="fas fa-address-book"></i> Clientes
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="agendaDropdown">
-                            <li><a class="dropdown-item" href="{% url 'contact_list' %}">Contactos</a></li>
-                            <li><a class="dropdown-item" href="{% url 'buscar_contactos' %}">Buscar Contactos</a></li>  <!-- Nuevo enlace -->
+                            <li><a class="dropdown-item" href="{% url 'contact_list' %}">Lista de Clientes</a></li>
                             {% if user.is_authenticated and user.is_staff %}
-                                <li><a class="dropdown-item" href="{% url 'upload_csv' %}">Subir CSV</a></li>
-                                <li><a class="dropdown-item" href="{% url 'download_csv' %}">Descargar CSV</a></li>
-                                <li><a class="dropdown-item" href="{% url 'register' %}">Registro</a></li>
+                                <li><a class="dropdown-item" href="{% url 'register' %}">Registro de Clientes</a></li>
+                                <li><a class="dropdown-item" href="{% url 'upload_csv' %}">Subir archivo CSV</a></li>
+                                <li><a class="dropdown-item" href="{% url 'download_csv' %}">Descargar archivo CSV</a></li>
                             {% endif %}
-                        </ul>
-                    </li>
-
-                    <!-- Dropdown para Productos -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-box"></i> Productos
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="productosDropdown">
-                            <li><a class="dropdown-item" href="{% url 'producto_list' %}">Lista de Productos</a></li>
-                            <li><a class="dropdown-item" href="{% url 'producto_create' %}">Agregar Producto</a></li>
-                            <li><a class="dropdown-item" href="#">Buscar Productos</a></li>  <!-- Enlace pendiente -->
                         </ul>
                     </li>
 
@@ -60,11 +47,24 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="proveedoresDropdown">
                             <li><a class="dropdown-item" href="{% url 'proveedor_list' %}">Lista de Proveedores</a></li>
-                            <li><a class="dropdown-item" href="{% url 'proveedor_create' %}">Agregar Proveedor</a></li>
-                            <li><a class="dropdown-item" href="#">Buscar Proveedores</a></li>  <!-- Enlace pendiente -->
+                            <li><a class="dropdown-item" href="{% url 'proveedor_create' %}">Registro de Proveedores</a></li>
+                            <!--li><a class="dropdown-item" href="#">Buscar Proveedores</a></li>  < Enlace pendiente -->
                         </ul>
                     </li>
 
+                    <!-- Dropdown para Productos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-box"></i> Productos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+                            <li><a class="dropdown-item" href="{% url 'producto_list' %}">Lista de Productos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'producto_create' %}">Registro de Productos</a></li>
+                            <!--li><a class="dropdown-item" href="#">Buscar Productos</a></li>  <Enlace pendiente -->
+                        </ul>
+                    </li>
+
+                    
                     <!-- Enlace a Búsqueda Global -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'buscar_global' %}">

@@ -4,19 +4,29 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Confirmar Eliminación</h1>
+    <!-- Mensaje de confirmación en rojo -->
+    <div class="alert alert-danger text-center" role="alert">
+        <h1 class="alert-heading">¿Estás seguro de eliminar este contacto?</h1>
+    </div>
+
+    <!-- Detalles del contacto -->
     <div class="card mx-auto" style="max-width: 500px;">
         <div class="card-body">
-            <h5 class="card-title">¿Estás seguro de eliminar este contacto?</h5>
             <p class="card-text">
                 <strong>Nombre:</strong> {{ contact.nombres }} {{ contact.apellidos }}<br>
                 <strong>Teléfono:</strong> {{ contact.telefono }}<br>
                 <strong>Email:</strong> {{ contact.email }}
             </p>
+
+            <!-- Formulario de confirmación -->
             <form method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
-                <a href="{% url 'contact_list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sí, eliminar
+                </button>
+                <a href="{% url 'contact_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
             </form>
         </div>
     </div>

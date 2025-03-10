@@ -55,12 +55,14 @@ class PrecioProveedorForm(forms.ModelForm):
 class ProveedorForm(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['codigo', 'nombre', 'contacto', 'telefono', 'email', 'direccion']
+        fields = ['codigo', 'nombre', 'raz_social', 'rut_p', 'contacto', 'telefono', 'email', 'direccion']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['codigo'].required = True
         self.fields['nombre'].required = True
+        self.fields['raz_social'].required = True
+        self.fields['rut_p'].required = True
         self.fields['contacto'].required = True
 
     def clean_telefono(self):

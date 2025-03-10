@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Proveedor - {{ proveedor.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Mensaje de confirmación en rojo -->
+    <div class="alert alert-danger text-center" role="alert">
+        <h1 class="alert-heading">¿Estás seguro de que deseas eliminar este proveedor?</h1>
+    </div>
+
+    <!-- Detalles del proveedor -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title">{{ proveedor.nombre }}</h2>
+            <p class="card-text"><strong>Código:</strong> {{ proveedor.codigo }}</p>
+            <p class="card-text"><strong>Contacto:</strong> {{ proveedor.contacto }}</p>
+            <p class="card-text"><strong>Teléfono:</strong> {{ proveedor.telefono }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ proveedor.email }}</p>
+            <p class="card-text"><strong>Dirección:</strong> {{ proveedor.direccion }}</p>
+        </div>
+    </div>
+
+    <!-- Formulario de confirmación -->
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Sí, eliminar
+        </button>
+        <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Cancelar
+        </a>
+    </form>
+</div>
+{% endblock %}

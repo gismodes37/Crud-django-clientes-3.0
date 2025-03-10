@@ -617,6 +617,8 @@ def autocompletar(request):
 
     proveedores = Proveedor.objects.filter(
         Q(nombre__icontains=query) |
+        Q(raz_social=query) |
+        Q(rut_p=query) |
         Q(contacto__icontains=query) |
         Q(telefono__icontains=query) |
         Q(email__icontains=query) |

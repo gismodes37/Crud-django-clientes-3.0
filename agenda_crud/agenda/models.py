@@ -113,6 +113,14 @@ class Proveedor(models.Model):
     codigo = models.CharField(max_length=20, unique=True, verbose_name="Código de Proveedor")
     nombre = models.CharField(max_length=100)
     contacto = models.CharField(max_length=100, blank=True, null=True)
+    raz_social = models.CharField(max_length=100, blank=True, null=True)
+    rut_p = models.CharField(
+        max_length=12, 
+        blank=True, 
+        null=True, 
+        help_text="Formato: 00.000.000-0", 
+        verbose_name="Número de Rut"
+    )  # Opcional
     telefono = models.CharField(max_length=15, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
