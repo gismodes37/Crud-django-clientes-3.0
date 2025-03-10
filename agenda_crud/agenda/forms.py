@@ -37,3 +37,54 @@ class ContactForm(forms.ModelForm):
         if numero_registro and not re.match(r'^\d{4}-\d{3}$', numero_registro):
             raise forms.ValidationError('El número de registro debe tener el formato 0000-000.')
         return numero_registro
+    
+    
+    
+# Formulario de proveedores
+
+from .models import Proveedor
+from .models import PrecioProveedor
+
+class PrecioProveedorForm(forms.ModelForm):
+    class Meta:
+        model = PrecioProveedor
+        fields = ['producto', 'proveedor', 'precio_costo']
+        
+        
+
+class ProveedorForm(forms.ModelForm):
+    class Meta:
+        model = Proveedor
+        fields = ['codigo', 'nombre', 'contacto', 'telefono', 'email', 'direccion']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['codigo'].required = True
+        self.fields['nombre'].required = True
+        self.fields['contacto'].required = True
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if telefono and not re.match(r'^\+?1?\d{9,15}$', telefono):
+            raise forms.ValidationError('El número de teléfono debe tener un formato válido.')
+        return telefono
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+            raise forms.ValidationError('Ingrese un correo electrónico válido.')
+        return email
+        
+        
+
+# Formulario de productos
+from django import forms
+from .models import Producto
+
+class ProductoForm(forms.ModelForm):
+    class Meta:
+        model = Producto
+        fields = ['codigo', 'numero_registro', 'nombre', 'stock', 'precio_neto', 'margen_venta', 'flete', 'subfamilia']
+
+        
+

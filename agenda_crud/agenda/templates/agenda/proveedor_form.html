@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{% if form.instance.pk %}Editar Proveedor{% else %}Crear Proveedor{% endif %}</h1>
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- Mostrar errores generales del formulario -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <strong>Error:</strong> Por favor, corrige los siguientes errores.
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="id_codigo" class="form-label">Código</label>
+            {{ form.codigo }}
+            <div class="invalid-feedback">
+                Por favor, ingresa un código válido.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="id_nombre" class="form-label">Nombre</label>
+            {{ form.nombre }}
+            <div class="invalid-feedback">
+                Por favor, ingresa un nombre válido.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="id_contacto" class="form-label">Contacto</label>
+            {{ form.contacto }}
+            <div class="invalid-feedback">
+                Por favor, ingresa un contacto válido.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="id_telefono" class="form-label">Teléfono</label>
+            {{ form.telefono }}
+            <div class="invalid-feedback">
+                Por favor, ingresa un teléfono válido.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            {{ form.email }}
+            <div class="invalid-feedback">
+                Por favor, ingresa un email válido.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="id_direccion" class="form-label">Dirección</label>
+            {{ form.direccion }}
+            <div class="invalid-feedback">
+                Por favor, ingresa una dirección válida.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Guardar
+        </button>
+        <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Cancelar
+        </a>
+    </form>
+</div>
+
+<script>
+// Validación del formulario con Bootstrap
+(function () {
+    'use strict'
+
+    // Selecciona todos los formularios que necesitan validación
+    var forms = document.querySelectorAll('.needs-validation')
+
+    // Itera sobre los formularios y evita el envío si no son válidos
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>
+{% endblock %}

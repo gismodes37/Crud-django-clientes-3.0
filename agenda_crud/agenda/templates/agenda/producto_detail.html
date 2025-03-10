@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Detalle del Producto</h1>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">{{ producto.nombre }}</h2>
+            <p class="card-text"><strong>Código:</strong> {{ producto.codigo }}</p>
+            <p class="card-text"><strong>Número de Registro:</strong> {{ producto.numero_registro }}</p>
+            <p class="card-text"><strong>Stock:</strong> {{ producto.stock }}</p>
+            <p class="card-text"><strong>Precio Neto:</strong> ${{ producto.precio_neto }}</p>
+            <p class="card-text"><strong>Margen de Venta:</strong> {{ producto.margen_venta }}%</p>
+            <p class="card-text"><strong>Flete:</strong> ${{ producto.flete }}</p>
+            <p class="card-text"><strong>Subfamilia:</strong> {{ producto.subfamilia.nombre }}</p>
+        </div>
+    </div>
+
+    <h2>Precios de Proveedores</h2>
+    {% if precios_proveedores %}
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Proveedor</th>
+                <th>Precio de Costo</th>
+                <th>Descuento</th>
+                <th>Precio con Descuento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for precio in precios_proveedores %}
+            <tr>
+                <td>{{ precio.proveedor.nombre }}</td>
+                <td>${{ precio.precio_costo }}</td>
+                <td>{{ precio.descuento }}%</td>
+                <td>${{ precio.precio_con_descuento }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No hay precios de proveedores asociados a este producto.
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'producto_update' producto.pk %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Editar Producto
+        </a>
+        <a href="{% url 'producto_delete' producto.pk %}" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Eliminar Producto
+        </a>
+        <a href="{% url 'producto_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver a la Lista
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -85,10 +85,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agenda_db',  # Nombre de la base de datos  --  scorstqh_agenda_db
-        'USER': 'scorpion',  # Usuario de MySQL  --  scorstqh_scorpion	
+        'USER': 'root',  # Usuario de MySQL  --  scorstqh_scorpion	
         'PASSWORD': 'nenA2964',  # Contraseña de MySQL  --  angE#2964#1521
         'HOST': 'localhost',  # Host de la base de datos
-        'PORT': '3306',  # Puerto de MySQL (por defecto es 3306)
+        'PORT': '3307',  # Puerto de MySQL (por defecto es 3306)
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # Modo estricto para MySQL
         },

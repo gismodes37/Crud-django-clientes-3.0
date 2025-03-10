@@ -214,8 +214,8 @@ def contact_list(request):
 def buscar_contactos(request):
     query = request.GET.get('q', '').strip()
     if len(query) < 2:
-        return JsonResponse({'html': '<p>Ingresa al menos 2 caracteres para buscar.</p>'})
-    
+        return render(request, 'agenda/buscar_contactos.html', {'query': query})
+
     contacts = Contact.objects.filter(
         Q(nombres__icontains=query) |
         Q(apellidos__icontains=query) |
@@ -224,8 +224,14 @@ def buscar_contactos(request):
         Q(razon_social__icontains=query) |
         Q(rut__icontains=query)
     )
-    html = render_to_string('agenda/partials/contactos_tabla.html', {'contacts': contacts})
-    return JsonResponse({'html': html})
+    
+    context = {
+        'query': query,
+        'contacts': contacts,
+    }
+
+    return render(request, 'agenda/buscar_contactos.html', context)
+
 
 
 
@@ -285,3 +291,341 @@ def contact_delete(request, pk):
 # Logout personalizado
 class CustomLogoutView(LogoutView):
     template_name = './registration/cerrar_sesion.html'
+
+
+
+#Vista para gestionar proveedores:
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Proveedor
+from .forms import ProveedorForm
+from .models import PrecioProveedor
+from .forms import PrecioProveedorForm  # Asegúrate de que este formulario esté definido en forms.py
+
+
+@login_required
+def proveedor_detail(request, pk):
+    """
+    Vista para mostrar los detalles de un proveedor.
+    """
+    proveedor = get_object_or_404(Proveedor, pk=pk)
+    return render(request, 'agenda/proveedor_detail.html', {'proveedor': proveedor})
+
+
+
+@login_required
+def proveedor_list(request):
+    query = request.GET.get('q', '')
+    order_by = request.GET.get('order_by', 'nombre')
+    order = request.GET.get('order', 'asc')
+
+    if order == 'desc':
+        order_by = f'-{order_by}'
+
+    proveedores = Proveedor.objects.all().order_by(order_by)
+
+    if query:
+        proveedores = proveedores.filter(
+            Q(nombre__icontains=query) |
+            Q(contacto__icontains=query) |
+            Q(telefono__icontains=query) |
+            Q(email__icontains=query) |
+            Q(direccion__icontains=query)
+        )
+
+    paginator = Paginator(proveedores, 10)  # 10 proveedores por página
+    page = request.GET.get('page')
+
+    try:
+        proveedores = paginator.page(page)
+    except PageNotAnInteger:
+        proveedores = paginator.page(1)
+    except EmptyPage:
+        proveedores = paginator.page(paginator.num_pages)
+
+    return render(request, 'agenda/proveedor_list.html', {
+        'proveedores': proveedores,
+        'query': query,
+        'order_by': order_by,
+        'order': order,
+    })
+
+
+
+# views.py
+@login_required
+def proveedor_create(request):
+    """
+    Vista para crear un nuevo proveedor.
+    Si el método es POST, valida el formulario y guarda el proveedor.
+    Si el método es GET, muestra un formulario vacío.
+    """
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST)
+        if form.is_valid():
+            proveedor = form.save(commit=False)
+            proveedor.creado_por = request.user
+            proveedor.save()
+            messages.success(request, 'Proveedor creado exitosamente.')  # Mensaje de éxito
+            return redirect('proveedor_list')
+        else:
+            # Si el formulario no es válido, mostrar errores
+            messages.error(request, 'Hubo un error en el formulario. Revise los datos.')
+            print("Errores en el formulario:", form.errors)  # Depuración: imprime errores en la consola
+    else:
+        form = ProveedorForm()
+    return render(request, 'agenda/proveedor_form.html', {'form': form})
+
+
+
+@login_required
+def proveedor_update(request, pk):
+    proveedor = get_object_or_404(Proveedor, pk=pk)
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST, instance=proveedor)
+        if form.is_valid():
+            proveedor = form.save(commit=False)
+            proveedor.modificado_por = request.user
+            proveedor.save()
+            return redirect('proveedor_list')
+    else:
+        form = ProveedorForm(instance=proveedor)
+    return render(request, 'agenda/proveedor_form.html', {'form': form})
+
+
+
+@login_required
+def proveedor_delete(request, pk):
+    proveedor = get_object_or_404(Proveedor, pk=pk)
+    if request.method == 'POST':
+        proveedor.delete()
+        return redirect('proveedor_list')
+    return render(request, 'agenda/proveedor_confirm_delete.html', {'proveedor': proveedor})
+
+
+
+@login_required
+def precio_proveedor_list(request):
+    precios_proveedores = PrecioProveedor.objects.all()
+    return render(request, 'agenda/precio_proveedor_list.html', {'precios_proveedores': precios_proveedores})
+
+
+@login_required
+def precio_proveedor_create(request):
+    if request.method == 'POST':
+        form = PrecioProveedorForm(request.POST)
+        if form.is_valid():
+            precio_proveedor = form.save(commit=False)
+            precio_proveedor.creado_por = request.user
+            precio_proveedor.save()
+            return redirect('precio_proveedor_list')  # Redirige a la lista de precios de proveedores
+    else:
+        form = PrecioProveedorForm()
+    return render(request, 'agenda/precio_proveedor_form.html', {'form': form})
+
+
+@login_required
+def precio_proveedor_update(request, pk):
+    precio_proveedor = get_object_or_404(PrecioProveedor, pk=pk)
+    if request.method == 'POST':
+        form = PrecioProveedorForm(request.POST, instance=precio_proveedor)
+        if form.is_valid():
+            precio_proveedor = form.save(commit=False)
+            precio_proveedor.modificado_por = request.user
+            precio_proveedor.save()
+            return redirect('precio_proveedor_list')  # Redirige a la lista de precios de proveedores
+    else:
+        form = PrecioProveedorForm(instance=precio_proveedor)
+    return render(request, 'agenda/precio_proveedor_form.html', {'form': form})
+
+
+
+@login_required
+def precio_proveedor_delete(request, pk):
+    precio_proveedor = get_object_or_404(PrecioProveedor, pk=pk)
+    if request.method == 'POST':
+        precio_proveedor.delete()
+        return redirect('precio_proveedor_list')  # Redirige a la lista de precios de proveedores
+    return render(request, 'agenda/precio_proveedor_confirm_delete.html', {'precio_proveedor': precio_proveedor})
+
+
+
+
+
+# Productos Vistas
+
+from .models import Producto
+from django.db import models
+from .forms import ProductoForm  # Asegúrate de que este formulario esté definido en forms.py
+
+
+
+def producto_list(request):
+    # Obtener todos los productos
+    productos = Producto.objects.all()
+    
+    # Renderizar la plantilla con la lista de productos
+    return render(request, 'agenda/producto_list.html', {'productos': productos})
+
+
+
+@login_required
+def producto_create(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            producto = form.save(commit=False)
+            producto.creado_por = request.user
+            producto.save()
+            return redirect('producto_list')  # Redirige a la lista de productos después de crear uno nuevo
+    else:
+        form = ProductoForm()
+    return render(request, 'agenda/producto_form.html', {'form': form})
+
+
+
+@login_required
+def producto_detail(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    precios_proveedores = PrecioProveedor.objects.filter(producto=producto)
+    return render(request, 'agenda/producto_detail.html', {
+        'producto': producto,
+        'precios_proveedores': precios_proveedores,
+    })
+
+
+
+@login_required
+def producto_update(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, instance=producto)
+        if form.is_valid():
+            producto = form.save(commit=False)
+            producto.modificado_por = request.user
+            producto.save()
+            return redirect('producto_detail', pk=producto.pk)  # Redirige a la vista de detalle del producto
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'agenda/producto_form.html', {'form': form})
+    
+    
+
+@login_required
+def producto_delete(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    if request.method == 'POST':
+        producto.delete()
+        return redirect('producto_list')  # Redirige a la lista de productos después de eliminar
+    return render(request, 'agenda/producto_confirm_delete.html', {'producto': producto})
+
+
+
+from .models import Producto
+
+def some_view(request):
+    productos = Producto.objects.all()
+    return render(request, 'base.html', {'productos': productos})
+
+
+
+# views.py
+from .models import Contact, Producto, Proveedor
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+def buscar_global(request):
+    query = request.GET.get('q', '').strip()
+
+    # Si no hay consulta, mostrar solo el formulario de búsqueda
+    if not query:
+        return render(request, 'agenda/buscar_global.html', {
+            'show_form': True,  # Indica que se debe mostrar el formulario
+        })
+
+    # Si la consulta tiene menos de 2 caracteres, mostrar un mensaje
+    if len(query) < 2:
+        return render(request, 'agenda/buscar_global.html', {
+            'show_form': True,
+            'message': 'Ingresa al menos 2 caracteres para buscar.',
+        })
+
+    # Búsqueda en Contactos
+    contacts = Contact.objects.filter(
+        Q(nombres__icontains=query) |
+        Q(apellidos__icontains=query) |
+        Q(telefono__icontains=query) |
+        Q(email__icontains=query) |
+        Q(razon_social__icontains=query) |
+        Q(rut__icontains=query)
+    )
+    paginator_contacts = Paginator(contacts, 10)  # 10 contactos por página
+    page_contacts = request.GET.get('page_contacts')
+    contacts = paginator_contacts.get_page(page_contacts)
+
+    # Búsqueda en Productos
+    productos = Producto.objects.filter(
+        Q(nombre__icontains=query) |
+        Q(codigo__icontains=query)
+    )
+    paginator_productos = Paginator(productos, 10)  # 10 productos por página
+    page_productos = request.GET.get('page_productos')
+    productos = paginator_productos.get_page(page_productos)
+
+    # Búsqueda en Proveedores
+    proveedores = Proveedor.objects.filter(
+        Q(nombre__icontains=query) |
+        Q(contacto__icontains=query) |
+        Q(telefono__icontains=query) |
+        Q(email__icontains=query) |
+        Q(direccion__icontains=query)
+    )
+    paginator_proveedores = Paginator(proveedores, 10)  # 10 proveedores por página
+    page_proveedores = request.GET.get('page_proveedores')
+    proveedores = paginator_proveedores.get_page(page_proveedores)
+
+    context = {
+        'show_form': True,  # Mostrar el formulario en la página de resultados
+        'query': query,
+        'contacts': contacts,
+        'productos': productos,
+        'proveedores': proveedores,
+    }
+
+    return render(request, 'agenda/buscar_global.html', context)
+
+
+
+def autocompletar(request):
+    query = request.GET.get('term', '').strip()
+    if len(query) < 2:
+        return JsonResponse([])
+
+    # Buscar sugerencias en Contactos, Productos y Proveedores
+    contacts = Contact.objects.filter(
+        Q(nombres__icontains=query) |
+        Q(apellidos__icontains=query) |
+        Q(telefono__icontains=query) |
+        Q(email__icontains=query) |
+        Q(razon_social__icontains=query) |
+        Q(rut__icontains=query)
+    ).values_list('nombres', 'apellidos')[:10]
+
+    productos = Producto.objects.filter(
+        Q(nombre__icontains=query) |
+        Q(codigo__icontains=query)
+    ).values_list('nombre', flat=True)[:10]
+
+    proveedores = Proveedor.objects.filter(
+        Q(nombre__icontains=query) |
+        Q(contacto__icontains=query) |
+        Q(telefono__icontains=query) |
+        Q(email__icontains=query) |
+        Q(direccion__icontains=query)
+    ).values_list('nombre, apellido', flat=True)[:10]
+
+    # Combinar resultados
+    results = [f"{nombre} {apellido}" for nombre, apellido in contacts]
+    results.extend([nombre for nombre in productos])
+    results.extend([nombre for nombre in proveedores])
+
+    return JsonResponse(results, safe=False)

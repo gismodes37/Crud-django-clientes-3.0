@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load static %}  <!-- Cargar la biblioteca de etiquetas estáticas -->
+{% load static %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!--  librerías de jQuery y jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 </head>
 <body>
     <!-- Barra de navegación -->
@@ -20,25 +25,58 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact_list' %}"><i class="fas fa-address-book"></i> Contactos</a>
+                    <!-- Dropdown para Agenda -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="agendaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-address-book"></i> Agenda
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="agendaDropdown">
+                            <li><a class="dropdown-item" href="{% url 'contact_list' %}">Contactos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'buscar_contactos' %}">Buscar Contactos</a></li>  <!-- Nuevo enlace -->
+                            {% if user.is_authenticated and user.is_staff %}
+                                <li><a class="dropdown-item" href="{% url 'upload_csv' %}">Subir CSV</a></li>
+                                <li><a class="dropdown-item" href="{% url 'download_csv' %}">Descargar CSV</a></li>
+                                <li><a class="dropdown-item" href="{% url 'register' %}">Registro</a></li>
+                            {% endif %}
+                        </ul>
                     </li>
-                    {% if user.is_authenticated and user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'upload_csv' %}">Subir CSV</a>
+
+                    <!-- Dropdown para Productos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-box"></i> Productos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+                            <li><a class="dropdown-item" href="{% url 'producto_list' %}">Lista de Productos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'producto_create' %}">Agregar Producto</a></li>
+                            <li><a class="dropdown-item" href="#">Buscar Productos</a></li>  <!-- Enlace pendiente -->
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'download_csv' %}">Descargar CSV</a>
+
+                    <!-- Dropdown para Proveedores -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="proveedoresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-truck"></i> Proveedores
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="proveedoresDropdown">
+                            <li><a class="dropdown-item" href="{% url 'proveedor_list' %}">Lista de Proveedores</a></li>
+                            <li><a class="dropdown-item" href="{% url 'proveedor_create' %}">Agregar Proveedor</a></li>
+                            <li><a class="dropdown-item" href="#">Buscar Proveedores</a></li>  <!-- Enlace pendiente -->
+                        </ul>
                     </li>
+
+                    <!-- Enlace a Búsqueda Global -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Registro</a>
+                        <a class="nav-link" href="{% url 'buscar_global' %}">
+                            <i class="fas fa-search"></i> Búsqueda Global
+                        </a>
                     </li>
-                    {% endif %}
+
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <form action="{% url 'logout' %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-link nav-link" ><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+                                <button type="submit" class="btn btn-link nav-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
                             </form>
                         </li>
                     {% else %}
@@ -47,13 +85,6 @@
                         </li>
                     {% endif %}
                 </ul>
-                <!-- Formulario de búsqueda -->
-                <form class="d-flex ms-3" id="search-form">
-                    <input class="form-control me-2" type="search" id="search-input" placeholder="Buscar contactos..." aria-label="Buscar">
-                    <button class="btn btn-outline-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
             </div>
         </div>
     </nav>
@@ -61,7 +92,6 @@
     <!-- Contenido principal -->
     <div class="container mt-4">
         {% block content %}
-        <!-- El contenido específico de cada página se insertará aquí -->
         {% endblock %}
     </div>
 
@@ -72,133 +102,8 @@
     </footer>
 
     <!-- Bootstrap JS y dependencias -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-    <!-- Script para la búsqueda en tiempo real -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const searchInput = document.getElementById('search-input');
-            const searchForm = document.getElementById('search-form');
-            const contactosTable = document.getElementById('contactos-table');
-        
-            searchInput.addEventListener('input', function() {
-                const query = this.value.trim();
-        
-                if (query.length >= 2) {  // Solo busca si hay al menos 2 caracteres
-                    fetch(`/buscar-contactos/?q=${query}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Actualiza la tabla de contactos con los resultados
-                            if (contactosTable) {
-                                contactosTable.innerHTML = data.html;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                } else if (query.length === 0) {
-                    // Si el campo de búsqueda está vacío, recarga la lista completa
-                    fetch(`/buscar-contactos/?q=`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (contactosTable) {
-                                contactosTable.innerHTML = data.html;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                }
-            });
-        
-            // Evita que el formulario se envíe y recargue la página
-            searchForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-            });
-        });
-        Verifica la vista de Django:
-        Asegúrate de que tu vista en Django esté manejando correctamente el caso en el que el parámetro de búsqueda (q) esté vacío. Aquí te dejo un ejemplo de cómo podría ser tu vista:
-        
-        python
-        Copy
-        from django.shortcuts import render
-        from .models import Cliente
-        
-        def buscar_clientes(request):
-            query = request.GET.get('q', '').strip()  # Obtén el valor del campo de búsqueda
-            if query:
-                clientes = Cliente.objects.filter(nombre__icontains=query)  # Filtra los clientes
-            else:
-                clientes = Cliente.objects.all()  # Si no hay query, devuelve todos los clientes
-        
-            # Renderiza la tabla de contactos como un fragmento HTML
-            return render(request, 'agenda/partials/contactos_tabla.html', {'contacts': clientes})
-        
-    </script>
-
-    <!-- Script para la ordenacion -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sortIcons = document.querySelectorAll(".sort-icon");
-        
-            sortIcons.forEach(icon => {
-                icon.addEventListener("click", function() {
-                    const column = this.getAttribute("data-column"); // Columna a ordenar
-                    const currentOrder = this.getAttribute("data-order") || "asc"; // Orden actual
-        
-                    // Cambiar el ícono y el orden
-                    if (currentOrder === "asc") {
-                        this.innerHTML = '<i class="fas fa-sort-up"></i>'; // Ícono ascendente
-                        this.setAttribute("data-order", "desc");
-                    } else {
-                        this.innerHTML = '<i class="fas fa-sort-down"></i>'; // Ícono descendente
-                        this.setAttribute("data-order", "asc");
-                    }
-        
-                    // Llamar a la función de ordenación
-                    sortTable(column, currentOrder);
-                });
-            });
-        
-            function sortTable(column, order) {
-                const table = document.querySelector(".table");
-                const tbody = table.querySelector("tbody");
-                const rows = Array.from(tbody.querySelectorAll("tr"));
-        
-                // Obtener el índice de la columna
-                const columnIndex = getColumnIndex(column);
-        
-                // Ordenar las filas
-                rows.sort((a, b) => {
-                    const aValue = a.querySelector(`td:nth-child(${columnIndex})`).textContent.trim().toLowerCase();
-                    const bValue = b.querySelector(`td:nth-child(${columnIndex})`).textContent.trim().toLowerCase();
-        
-                    if (order === "asc") {
-                        return aValue.localeCompare(bValue, 'es', { sensitivity: 'base' });
-                    } else {
-                        return bValue.localeCompare(aValue, 'es', { sensitivity: 'base' });
-                    }
-                });
-        
-                // Reemplazar las filas en la tabla
-                while (tbody.firstChild) {
-                    tbody.removeChild(tbody.firstChild); // Limpiar el tbody
-                }
-                rows.forEach(row => tbody.appendChild(row)); // Agregar las filas ordenadas
-            }
-        
-            function getColumnIndex(column) {
-                // Obtener el índice de la columna basado en el nombre
-                const headers = document.querySelectorAll(".table thead th, .table thead td");
-                for (let i = 0; i < headers.length; i++) {
-                    if (headers[i].getAttribute("data-column") === column) {
-                        return i + 1; // Devolver el índice de la columna (comienza en 1)
-                    }
-                }
-                return 1; // Por defecto, ordenar por la primera columna
-            }
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

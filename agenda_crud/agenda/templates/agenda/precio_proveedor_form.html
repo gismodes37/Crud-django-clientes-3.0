@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Editar Precio de Proveedor{% else %}Crear Precio de Proveedor{% endif %}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'precio_proveedor_list' %}">Volver a la lista</a>
+{% endblock %}

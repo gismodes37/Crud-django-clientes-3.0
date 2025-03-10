@@ -68,3 +68,84 @@ class Contact(models.Model):
 
     class Meta:
         ordering = ['-fecha_registro']
+        
+
+#---------------------*---------------------#  
+#from .forms import ProveedorForm
+#from .models import Producto
+
+      
+# Modelo de Proveedores
+class Familia(models.Model):
+    codigo = models.CharField(max_length=20, unique=True)
+    nombre = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.codigo} - {self.nombre}"
+
+
+
+class SubFamilia(models.Model):
+    codigo = models.CharField(max_length=20, unique=True)
+    nombre = models.CharField(max_length=100)
+    familia = models.ForeignKey(Familia, on_delete=models.CASCADE, related_name='subfamilias')
+
+    def __str__(self):
+        return f"{self.codigo} - {self.nombre} ({self.familia.nombre})"
+    
+    
+
+class Producto(models.Model):
+    codigo = models.CharField(max_length=50, unique=True, default="CODIGO_TEMPORAL")  # Valor predeterminado
+    numero_registro = models.CharField(max_length=50, unique=True, default="TEMPORAL")  # Valor predeterminado
+    nombre = models.CharField(max_length=200)
+    stock = models.PositiveIntegerField()
+    precio_neto = models.DecimalField(max_digits=10, decimal_places=2)
+    margen_venta = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    flete = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    subfamilia = models.ForeignKey(SubFamilia, on_delete=models.CASCADE, related_name='productos')
+
+    def __str__(self):
+        return f"{self.codigo} - {self.nombre}"  # Asegurar que el código aparece en la representación
+
+
+class Proveedor(models.Model):
+    codigo = models.CharField(max_length=20, unique=True, verbose_name="Código de Proveedor")
+    nombre = models.CharField(max_length=100)
+    contacto = models.CharField(max_length=100, blank=True, null=True)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    direccion = models.TextField(blank=True, null=True)
+    creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='proveedores_creados')
+    modificado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='proveedores_modificados')
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.codigo} - {self.nombre}"
+    
+    
+
+# Relación Producto-Proveedor con precios y descuento
+class PrecioProveedor(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    precio_costo = models.DecimalField(max_digits=10, decimal_places=2)
+    descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Descuento en porcentaje
+    fecha_actualizacion = models.DateField(auto_now=True)
+
+    class Meta:
+        unique_together = ('producto', 'proveedor')  # Evita duplicados
+
+    @property
+    def precio_con_descuento(self):
+        """Calcula el precio de costo con descuento aplicado."""
+        return self.precio_costo * (1 - (self.descuento / 100))
+
+    def __str__(self):
+        return f"{self.proveedor.nombre} - {self.producto.nombre}: ${self.precio_con_descuento} (Descuento: {self.descuento}%)"
+
+
+    
+    
+
+
