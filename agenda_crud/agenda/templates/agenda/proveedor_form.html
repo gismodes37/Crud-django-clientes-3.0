@@ -2,109 +2,143 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>{% if form.instance.pk %}Editar Proveedor{% else %}Crear Proveedor{% endif %}</h1>
-    <form method="post" class="needs-validation" novalidate>
-        {% csrf_token %}
-        
-        <!-- Mostrar errores generales del formulario -->
-        {% if form.errors %}
-            <div class="alert alert-danger">
-                <strong>Error:</strong> Por favor, corrige los siguientes errores.
-                <ul>
-                    {% for field, errors in form.errors.items %}
-                        {% for error in errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <!-- Encabezado de la tarjeta -->
+                <div class="card-header bg-primary text-white">
+                    <h1 class="card-title mb-0">
+                        {% if form.instance.pk %}Editar Proveedor{% else %}Crear Proveedor{% endif %}
+                    </h1>
+                </div>
 
-        <div class="mb-3">
-            <label for="id_codigo" class="form-label">Código</label>
-            {{ form.codigo }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un código válido.
+                <!-- Cuerpo de la tarjeta -->
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Mostrar errores generales del formulario -->
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <strong>Error:</strong> Por favor, corrige los siguientes errores.
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <!-- Campo: Código -->
+                        <div class="mb-3">
+                            <label for="id_codigo" class="form-label"><i class="fas fa-hashtag"></i>Código</label>
+                            {{ form.codigo }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un código válido.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Nombre -->
+                        <div class="mb-3">
+                            <label for="id_nombre" class="form-label">Nombre</label>
+                            {{ form.nombre }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un nombre válido.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Razón Social -->
+                        <div class="mb-3">
+                            <label for="id_raz_social" class="form-label">Razón Social</label>
+                            {{ form.raz_social }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa una razón social válida.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Rut -->
+                        <div class="mb-3">
+                            <label for="id_rut_p" class="form-label">Rut</label>
+                            {{ form.rut_p }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un rut válido.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Contacto -->
+                        <div class="mb-3">
+                            <label for="id_contacto" class="form-label">Contacto</label>
+                            {{ form.contacto }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un contacto válido.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Teléfono -->
+                        <div class="mb-3">
+                            <label for="id_telefono" class="form-label">Teléfono</label>
+                            {{ form.telefono }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un teléfono válido.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Email -->
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa un email válido.
+                            </div>
+                        </div>
+
+                        <!-- Campo: Dirección -->
+                        <div class="mb-3">
+                            <label for="id_direccion" class="form-label">Dirección</label>
+                            {{ form.direccion }}
+                            <div class="invalid-feedback">
+                                Por favor, ingresa una dirección válida.
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                            <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="mb-3">
-            <label for="id_nombre" class="form-label">Nombre</label>
-            {{ form.nombre }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un nombre válido.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="id_raz_social" class="form-label">Razón Social</label>
-            {{ form.raz_social }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un nombre válido.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="id_rut_p" class="form-label">Rut</label>
-            {{ form.rut_p }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un nombre válido.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="id_contacto" class="form-label">Contacto</label>
-            {{ form.contacto }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un contacto válido.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="id_telefono" class="form-label">Teléfono</label>
-            {{ form.telefono }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un teléfono válido.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="id_email" class="form-label">Email</label>
-            {{ form.email }}
-            <div class="invalid-feedback">
-                Por favor, ingresa un email válido.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="id_direccion" class="form-label">Dirección</label>
-            {{ form.direccion }}
-            <div class="invalid-feedback">
-                Por favor, ingresa una dirección válida.
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Guardar
-        </button>
-        <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">
-            <i class="fas fa-times"></i> Cancelar
-        </a>
-    </form>
+    </div>
 </div>
 
+<!-- Script para validación del formulario -->
 <script>
-// Validación del formulario con Bootstrap
 (function () {
-    'use strict'
+    'use strict';
 
     // Selecciona todos los formularios que necesitan validación
-    var forms = document.querySelectorAll('.needs-validation')
+    var forms = document.querySelectorAll('.needs-validation');
 
     // Itera sobre los formularios y evita el envío si no son válidos
     Array.prototype.slice.call(forms)
         .forEach(function (form) {
             form.addEventListener('submit', function (event) {
                 if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
 
-                form.classList.add('was-validated')
-            }, false)
-        })
-})()
+                form.classList.add('was-validated');
+            }, false);
+        });
+})();
 </script>
 {% endblock %}

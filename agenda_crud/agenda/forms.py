@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Contact, User
+from .models import Contact, Proveedor, PrecioProveedor, Producto
 import re
 
 
@@ -11,18 +11,25 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'password1', 'password2']
 
+
 # Formulario para crear/editar contactos
 class ContactForm(forms.ModelForm):
-    #class Meta:
-    #    model = Contact
-    #    fields = '__all__'  # Incluye todos los campos del modelo
     class Meta:
         model = Contact
-        exclude = ['fecha_registro', 'creado_por', 'modificado_por']  # Excluye estos campos del formulario
+        exclude = ['fecha_registro', 'creado_por', 'modificado_por', 'numero_registro']  # Excluir numero_registro para que se genere automáticamente
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Personaliza los campos si es necesario
+        
+        # Hacer el campo "id" de solo lectura si el objeto ya existe
+        if self.instance and self.instance.id:
+            self.fields['id'] = forms.IntegerField(
+                initial=self.instance.id,  # Valor inicial del campo
+                widget=forms.TextInput(attrs={'readonly': 'readonly'}),  # Hacer el campo de solo lectura
+                label="ID"  # Etiqueta del campo
+            )
+        
+        # Hacer otros campos opcionales (esto no cambia)
         self.fields['nombres'].required = False
         self.fields['apellidos'].required = False
         self.fields['telefono'].required = False
@@ -30,27 +37,14 @@ class ContactForm(forms.ModelForm):
         self.fields['razon_social'].required = False
         self.fields['rut'].required = False
         self.fields['direccion'].required = False
-        self.fields['numero_registro'].required = False  # Asegúrate de que sea opcional
 
-    def clean_numero_registro(self):
-        numero_registro = self.cleaned_data.get('numero_registro')
-        if numero_registro and not re.match(r'^\d{4}-\d{3}$', numero_registro):
-            raise forms.ValidationError('El número de registro debe tener el formato 0000-000.')
-        return numero_registro
-    
-    
-    
+
 # Formulario de proveedores
-
-from .models import Proveedor
-from .models import PrecioProveedor
-
 class PrecioProveedorForm(forms.ModelForm):
     class Meta:
         model = PrecioProveedor
         fields = ['producto', 'proveedor', 'precio_costo']
-        
-        
+
 
 class ProveedorForm(forms.ModelForm):
     class Meta:
@@ -76,17 +70,10 @@ class ProveedorForm(forms.ModelForm):
         if email and not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
             raise forms.ValidationError('Ingrese un correo electrónico válido.')
         return email
-        
-        
+
 
 # Formulario de productos
-from django import forms
-from .models import Producto
-
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = ['codigo', 'numero_registro', 'nombre', 'stock', 'precio_neto', 'margen_venta', 'flete', 'subfamilia']
-
-        
-

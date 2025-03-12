@@ -2,41 +2,53 @@
     <table class="table table-striped table-hover table-sm" style="width: 100%;">
         <thead class="table-dark">
             <tr>
- <!-- Columna N° de Registro -->
-<td class="text-center">
-    <div class="d-flex justify-content-between align-items-center">
-        <span>Cotización</span>
-        <span class="sort-icon" data-column="numero_registro">
-            <a href="?order_by=numero_registro&order={% if order_by == 'numero_registro' and order == 'asc' %}desc{% else %}asc{% endif %}">
-                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
-            </a>
-        </span>
-    </div>
-</td>
+                <!-- Nueva columna para el ID -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>ID</span>
+                        <span class="sort-icon" data-column="id">
+                            <a href="?order_by=id&order={% if order_by == 'id' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
 
-<!-- Columna Nombres -->
-<th class="text-center">
-    <div class="d-flex justify-content-between align-items-center">
-        <span>Nombres</span>
-        <span class="sort-icon" data-column="nombres">
-            <a href="?order_by=nombres&order={% if order_by == 'nombres' and order == 'asc' %}desc{% else %}asc{% endif %}">
-                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
-            </a>
-        </span>
-    </div>
-</th>
+                <!-- Columna N° de Registro -->
+                <td class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Cotización</span>
+                        <span class="sort-icon" data-column="numero_registro">
+                            <a href="?order_by=numero_registro&order={% if order_by == 'numero_registro' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </td>
 
-<!-- Columna Apellidos -->
-<th class="text-center">
-    <div class="d-flex justify-content-between align-items-center">
-        <span>Apellidos</span>
-        <span class="sort-icon" data-column="apellidos">
-            <a href="?order_by=apellidos&order={% if order_by == 'apellidos' and order == 'asc' %}desc{% else %}asc{% endif %}">
-                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
-            </a>
-        </span>
-    </div>
-</th>
+                <!-- Columna Nombres -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Nombres</span>
+                        <span class="sort-icon" data-column="nombres">
+                            <a href="?order_by=nombres&order={% if order_by == 'nombres' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Apellidos -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Apellidos</span>
+                        <span class="sort-icon" data-column="apellidos">
+                            <a href="?order_by=apellidos&order={% if order_by == 'apellidos' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
 
                 <!-- Otras columnas (sin ordenación) -->
                 <th class="text-center">Teléfono</th>
@@ -56,6 +68,10 @@
             {% if contacts %}
                 {% for contact in contacts %}
                     <tr>
+                        <!-- Nueva columna para el ID -->
+                        <td style="white-space: nowrap; width: auto;" class="text-center">{{ contact.id }}</td>
+
+                        <!-- Resto de las columnas -->
                         <td style="white-space: nowrap; width: auto;" class="text-center">{{ contact.numero_registro }}</td>
                         <td style="white-space: nowrap; width: auto;">{{ contact.nombres }}</td>
                         <td style="white-space: nowrap; width: auto;">{{ contact.apellidos }}</td>
@@ -95,7 +111,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="12" class="text-center">No hay contactos para mostrar.</td>
+                    <td colspan="15" class="text-center">No hay contactos para mostrar.</td>
                 </tr>
             {% endif %}
         </tbody>

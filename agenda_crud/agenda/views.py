@@ -315,14 +315,22 @@ def proveedor_detail(request, pk):
 @login_required
 def proveedor_list(request):
     query = request.GET.get('q', '')
-    order_by = request.GET.get('order_by', 'nombre')
-    order = request.GET.get('order', 'asc')
+    order_by = request.GET.get('order_by', 'nombre')  # Columna de ordenación
+    order = request.GET.get('order', 'asc')  # Orden (asc o desc)
 
+    # Aplicar el orden
     if order == 'desc':
-        order_by = f'-{order_by}'
+        order_by = f'-{order_by}'  # Agregar un guion para orden descendente
+    else:
+        order_by = f'{order_by}'  # Mantener orden ascendente
 
-    proveedores = Proveedor.objects.all().order_by(order_by)
+    # Obtener todos los registros ordenados antes de la paginación
+    try:
+        proveedores = Proveedor.objects.all().order_by(order_by)
+    except FieldError:
+        proveedores = Proveedor.objects.all().order_by('nombre')
 
+    # Filtrar por búsqueda si hay un query
     if query:
         proveedores = proveedores.filter(
             Q(nombre__icontains=query) |
@@ -332,6 +340,7 @@ def proveedor_list(request):
             Q(direccion__icontains=query)
         )
 
+    # Aplicar paginación
     paginator = Paginator(proveedores, 10)  # 10 proveedores por página
     page = request.GET.get('page')
 
@@ -351,7 +360,6 @@ def proveedor_list(request):
 
 
 
-# views.py
 @login_required
 def proveedor_create(request):
     """

@@ -3,21 +3,110 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Lista de Proveedores</h1>
-    <a href="{% url 'proveedor_create' %}" class="btn btn-primary mb-3">
+    <a href="{% url 'proveedor_create' %}" class="btn btn-outline-primary mb-3">
         <i class="fas fa-plus"></i> Crear Proveedor
     </a>
 
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
             <tr>
-                <th class="text-center">Código</th>
-                <th class="text-center">Nombre</th>
-                <th class="text-center">Razón Social</th>
-                <th class="text-center">Rut</th>
-                <th class="text-center">Contacto</th>
-                <th class="text-center">Teléfono</th>
-                <th class="text-center">Email</th>
-                <th class="text-center">Dirección</th>
+                <!-- Columna Código -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Código</span>
+                        <span class="sort-icon" data-column="codigo">
+                            <a href="?order_by=codigo&order={% if order_by == 'codigo' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Nombre -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Nombre</span>
+                        <span class="sort-icon" data-column="nombre">
+                            <a href="?order_by=nombre&order={% if order_by == 'nombre' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Razón Social -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Razón Social</span>
+                        <span class="sort-icon" data-column="raz_social">
+                            <a href="?order_by=raz_social&order={% if order_by == 'raz_social' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Rut -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Rut</span>
+                        <span class="sort-icon" data-column="rut_p">
+                            <a href="?order_by=rut_p&order={% if order_by == 'rut_p' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Contacto -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Contacto</span>
+                        <span class="sort-icon" data-column="contacto">
+                            <a href="?order_by=contacto&order={% if order_by == 'contacto' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Teléfono -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Teléfono</span>
+                        <span class="sort-icon" data-column="telefono">
+                            <a href="?order_by=telefono&order={% if order_by == 'telefono' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Email -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Email</span>
+                        <span class="sort-icon" data-column="email">
+                            <a href="?order_by=email&order={% if order_by == 'email' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Dirección -->
+                <th class="text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Dirección</span>
+                        <span class="sort-icon" data-column="direccion">
+                            <a href="?order_by=direccion&order={% if order_by == 'direccion' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                                <i class="fas fa-sort"></i> <!-- Ícono de ordenación por defecto -->
+                            </a>
+                        </span>
+                    </div>
+                </th>
+
+                <!-- Columna Acciones -->
                 <th class="text-center" colSpan="3" class="centrado">Acciones</th>
             </tr>
         </thead>
@@ -26,8 +115,8 @@
             <tr>
                 <td style="white-space: nowrap; width: auto;" class="text-center">{{ proveedor.codigo }}</td>
                 <td style="white-space: nowrap; width: auto;">{{ proveedor.nombre }}</td>
-                <td style="white-space: nowrap; width: auto;">{{ proveedor.raz_social}}</td>
-                <td>{{ proveedor.rut_p}}</td>
+                <td style="white-space: nowrap; width: auto;">{{ proveedor.raz_social }}</td>
+                <td>{{ proveedor.rut_p }}</td>
                 <td style="white-space: nowrap; width: auto;">{{ proveedor.contacto }}</td>
                 <td>{{ proveedor.telefono }}</td>
                 <td>{{ proveedor.email }}</td>

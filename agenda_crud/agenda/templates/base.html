@@ -33,7 +33,7 @@
                         <ul class="dropdown-menu" aria-labelledby="agendaDropdown">
                             <li><a class="dropdown-item" href="{% url 'contact_list' %}">Lista de Clientes</a></li>
                             {% if user.is_authenticated and user.is_staff %}
-                                <li><a class="dropdown-item" href="{% url 'register' %}">Registro de Clientes</a></li>
+                                <li><a class="dropdown-item" href="{% url 'register' %}">Registro de Usuarios</a></li>
                                 <li><a class="dropdown-item" href="{% url 'upload_csv' %}">Subir archivo CSV</a></li>
                                 <li><a class="dropdown-item" href="{% url 'download_csv' %}">Descargar archivo CSV</a></li>
                             {% endif %}
