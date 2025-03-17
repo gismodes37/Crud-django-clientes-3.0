@@ -1,4 +1,3 @@
-Claro, puedo ayudarte a crear un archivo `README.md` para tu proyecto en GitHub. Un buen `README.md` debe proporcionar una descripción general del proyecto, cómo instalarlo, cómo ejecutarlo y cómo contribuir a él. Aquí tienes un ejemplo basado en tu descripción:
 
 ---
 
