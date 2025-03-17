@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Lista de Subcategorías</h1>
+    <a href="{% url 'subcategoria_create' %}" class="btn btn-primary">Crear Nueva Subcategoría</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subcategoria in subcategorias %}
+            <tr>
+                <td>{{ subcategoria.codigo }}</td>
+                <td>{{ subcategoria.nombre }}</td>
+                <td>{{ subcategoria.categoria.nombre }}</td>
+                <td>{{ subcategoria.descripcion|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'subcategoria_update' subcategoria.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'subcategoria_delete' subcategoria.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

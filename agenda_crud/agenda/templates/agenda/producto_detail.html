@@ -12,7 +12,7 @@
             <p class="card-text"><strong>Precio Neto:</strong> ${{ producto.precio_neto }}</p>
             <p class="card-text"><strong>Margen de Venta:</strong> {{ producto.margen_venta }}%</p>
             <p class="card-text"><strong>Flete:</strong> ${{ producto.flete }}</p>
-            <p class="card-text"><strong>Subfamilia:</strong> {{ producto.subfamilia.nombre }}</p>
+            <p class="card-text"><strong>Subcategoría:</strong> {{ producto.subcategoria.nombre }}</p>
         </div>
     </div>
 
@@ -25,6 +25,7 @@
                 <th>Precio de Costo</th>
                 <th>Descuento</th>
                 <th>Precio con Descuento</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,14 @@
                 <td>${{ precio.precio_costo }}</td>
                 <td>{{ precio.descuento }}%</td>
                 <td>${{ precio.precio_con_descuento }}</td>
+                <td>
+                    <a href="{% url 'precio_proveedor_update' precio.pk %}" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'precio_proveedor_delete' precio.pk %}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -44,6 +53,14 @@
     </div>
     {% endif %}
 
+    <!-- Botón para agregar un nuevo precio de proveedor -->
+    <div class="mt-3">
+        <a href="{% url 'precio_proveedor_create' producto.pk %}" class="btn btn-outline-success">
+            <i class="fas fa-plus"></i> Agregar Precio de Proveedor
+        </a>
+    </div>
+
+    <!-- Botones para editar, eliminar y volver a la lista -->
     <div class="mt-4">
         <a href="{% url 'producto_update' producto.pk %}" class="btn btn-primary">
             <i class="fas fa-edit"></i> Editar Producto

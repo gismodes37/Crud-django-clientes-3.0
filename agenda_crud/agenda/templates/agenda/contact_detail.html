@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block title %}Detalles del Contacto - Agenda{% endblock %}
 
@@ -16,15 +17,29 @@
             <p class="card-text"><strong>Fecha de Registro:</strong> {{ contact.fecha_registro|date:"d/m/Y H:i" }}</p>
             <p class="card-text"><strong>Creado Por:</strong> {{ contact.creado_por.username }}</p>
             <p class="card-text"><strong>Modificado Por:</strong> {{ contact.modificado_por.username|default:"No modificado" }}</p>
-            {% if contact.pdf %}
-                <p class="card-text"><strong>PDF:</strong> <a href="{{ contact.pdf.url }}" target="_blank">Ver PDF</a></p>
-            {% else %}
-                <p class="card-text"><strong>PDF:</strong> No hay PDF asociado.</p>
-            {% endif %}
+            
+            <!-- Lista de PDFs asociados al contacto -->
+            <p class="card-text"><strong>Archivos PDF:</strong></p>
+            <ul>
+                {% for pdf in contact.pdfs.all %}
+                    <li>
+                        <!-- Mostrar el nombre renombrado del archivo -->
+                        <a href="{{ pdf.pdf.url }}" target="_blank">{{ pdf.pdf.name|basename }}</a>
+                        <!-- Botón para eliminar el PDF -->
+                        <a href="{% url 'delete_pdf' pdf.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este archivo?');">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>No hay archivos PDF asociados.</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     <div class="mt-3">
         <a href="{% url 'contact_list' %}" class="btn btn-secondary">Volver a la Lista</a>
+        <!-- Botón para subir PDFs -->
+        <a href="{% url 'upload_pdf' contact.pk %}" class="btn btn-primary">Subir PDF</a>
     </div>
 </div>
 {% endblock %}

@@ -20,6 +20,8 @@ import chardet
 
 from .models import Contact
 from .forms import UserRegisterForm, ContactForm
+from .forms import ContactForm, ContactPDFForm
+
 
 
 
@@ -239,7 +241,8 @@ def buscar_contactos(request):
 @login_required
 def contact_detail(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
-    return render(request, 'agenda/contact_detail.html', {'contact': contact})
+    pdfs = contact.pdfs.all()  # Obtener todos los PDFs asociados al contacto
+    return render(request, 'agenda/contact_detail.html', {'contact': contact, 'pdfs': pdfs})
 
 
 
@@ -266,25 +269,60 @@ def contact_create(request):
 def contact_update(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
     if request.method == 'POST':
-        form = ContactForm(request.POST, request.FILES, instance=contact)
+        form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
-            contact = form.save(commit=False)
-            contact.modificado_por = request.user  # Asigna el usuario que realiza la modificación
-            contact.save()
-            return redirect('contact_list')
+            form.save()
+            return redirect('contact_detail', pk=contact.pk)
     else:
         form = ContactForm(instance=contact)
     return render(request, 'agenda/contact_form.html', {'form': form})
 
 
 
-@login_required
 def contact_delete(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
     if request.method == 'POST':
         contact.delete()
         return redirect('contact_list')
     return render(request, 'agenda/contact_confirm_delete.html', {'contact': contact})
+
+
+
+from .models import ContactPDF
+from .forms import ContactForm, ContactPDFForm  # 👈 Asegúrate de que esta importación sea correcta
+
+
+
+
+@login_required
+def upload_pdf(request, pk):
+    contact = get_object_or_404(Contact, pk=pk)  # Obtener el contacto por su ID
+    if request.method == 'POST':
+        form = ContactPDFForm(request.POST, request.FILES)
+        if form.is_valid():
+            pdf = form.save(commit=False)
+            pdf.contact = contact  # Asociar el PDF al contacto
+            pdf.save()
+            return redirect('contact_detail', pk=contact.pk)  # Redirigir a la vista de detalles del contacto
+    else:
+        form = ContactPDFForm()
+    return render(request, 'agenda/upload_pdf.html', {'form': form, 'contact': contact})
+
+
+
+def delete_pdf(request, pdf_id):
+    # Obtener el archivo PDF por su ID
+    pdf = get_object_or_404(ContactPDF, id=pdf_id)
+    
+    # Eliminar el archivo del sistema de archivos
+    pdf.pdf.delete()  # Esto elimina el archivo físico
+    
+    # Eliminar el registro de la base de datos
+    pdf.delete()
+    
+    # Redirigir a la vista de detalles del contacto
+    return redirect('contact_detail', pk=pdf.contact.id)
+
 
 
 
@@ -639,3 +677,95 @@ def autocompletar(request):
     results.extend([nombre for nombre in proveedores])
 
     return JsonResponse(results, safe=False)
+
+
+
+# Vistas para Categorías
+from .models import Categoria, Subcategoria
+from .forms import CategoriaForm, SubcategoriaForm
+
+
+@login_required
+def categoria_list(request):
+    categorias = Categoria.objects.all()
+    return render(request, 'agenda/categoria_list.html', {'categorias': categorias})
+
+@login_required
+def categoria_create(request):
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('categoria_list')
+    else:
+        form = CategoriaForm()
+    return render(request, 'agenda/categoria_form.html', {'form': form})
+
+@login_required
+def categoria_update(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            return redirect('categoria_list')
+    else:
+        form = CategoriaForm(instance=categoria)
+    return render(request, 'agenda/categoria_form.html', {'form': form})
+
+@login_required
+def categoria_delete(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == 'POST':
+        categoria.delete()
+        return redirect('categoria_list')
+    return render(request, 'agenda/categoria_confirm_delete.html', {'categoria': categoria})
+
+
+
+# Vistas para Subcategorías
+@login_required
+def subcategoria_list(request):
+    subcategorias = Subcategoria.objects.all()
+    return render(request, 'agenda/subcategoria_list.html', {'subcategorias': subcategorias})
+
+
+
+@login_required
+def subcategoria_create(request):
+    if request.method == 'POST':
+        form = SubcategoriaForm(request.POST)
+        if form.is_valid():
+            categoria_id = form.cleaned_data.get('categoria')
+            print(f"Categoria seleccionada: {categoria_id}")
+            form.save()
+            messages.success(request, "Subcategoría creada exitosamente.")
+            return redirect('subcategoria_list')
+        else:
+            messages.error(request, "Error al crear la subcategoría. Verifique los datos.")
+            print(form.errors)
+    else:
+        form = SubcategoriaForm()
+    return render(request, 'agenda/subcategoria_form.html', {'form': form})
+
+
+
+@login_required
+def subcategoria_update(request, pk):
+    subcategoria = get_object_or_404(Subcategoria, pk=pk)
+    if request.method == 'POST':
+        form = SubcategoriaForm(request.POST, instance=subcategoria)
+        if form.is_valid():
+            form.save()
+            return redirect('subcategoria_list')
+    else:
+        form = SubcategoriaForm(instance=subcategoria)
+    return render(request, 'agenda/subcategoria_form.html', {'form': form})
+
+@login_required
+def subcategoria_delete(request, pk):
+    subcategoria = get_object_or_404(Subcategoria, pk=pk)
+    if request.method == 'POST':
+        subcategoria.delete()
+        return redirect('subcategoria_list')
+    return render(request, 'agenda/subcategoria_confirm_delete.html', {'subcategoria': subcategoria})

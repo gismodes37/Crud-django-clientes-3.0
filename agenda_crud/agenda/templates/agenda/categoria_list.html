@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Lista de Categorías</h1>
+    <a href="{% url 'categoria_create' %}" class="btn btn-primary">Crear Nueva Categoría</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in categorias %}
+            <tr>
+                <td>{{ categoria.codigo }}</td>
+                <td>{{ categoria.nombre }}</td>
+                <td>{{ categoria.descripcion|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'categoria_update' categoria.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'categoria_delete' categoria.pk %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
