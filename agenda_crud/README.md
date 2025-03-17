@@ -1,7 +1,11 @@
 
 ---
 
-# Agenda CRUD
+# CRUD  SG-CP
+
+## Sistema de Gestión de Clientes y Proveedores
+
+## Gestiona tus Clientes y Proveedores de manera fácil y rápida.
 
 ## Descripción
 Este proyecto es una aplicación web de gestión de contactos, proveedores, productos, categorías y subcategorías. Está desarrollado con Django y proporciona funcionalidades básicas de CRUD (Crear, Leer, Actualizar, Eliminar) para cada entidad.
